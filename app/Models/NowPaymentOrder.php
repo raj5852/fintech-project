@@ -9,4 +9,8 @@ class NowPaymentOrder extends Model
 {
     use HasFactory;
     protected $guarded = [];
+
+    protected $casts = [
+        'renew' => 'json'
+    ];
 }

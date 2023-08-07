@@ -2,6 +2,7 @@
 
 namespace App\Models\Admin;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -38,7 +39,10 @@ class Membership extends Model
 
     }
 
-
+    function users()
+    {
+        return $this->belongsToMany(User::class, 'subscriptions', 'subscribe_id','user_id')->withPivot('expire_date', 'created_at', 'is_life_time', 'monthly_charge_date', 'monthly_charge');
+    }
 
 
 

@@ -2,6 +2,7 @@
 
 namespace App\Models\Admin;
 
+use App\Models\Comment;
 use App\Models\Review;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -109,10 +110,12 @@ class Product extends Model
     }
 
 
-    // function membershipProduct(){
-    //     return $this->belongsTo(MemberP)
-    // }
+    function orders(){
+        return $this->belongsToMany(Order::class,'order_details','product_id','order_id');
+    }
 
-
+    function comments(){
+        return $this->hasMany(Comment::class)->whereNull('parent_id');
+    }
 
 }

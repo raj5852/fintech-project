@@ -17,11 +17,7 @@
         $payments = App\Models\User\Recharge::where('user_id', Auth::id())
             ->latest()
             ->get();
-        // $subscribe = App\Models\Admin\Membership::join('subscriptions','memberships.id','subscriptions.subscribe_id')
-        // ->join('coupons','membership_id','subscriptions.subscribe_id')
-        // ->select('subscriptions.*','memberships.membership_name','coupons.coupon_name','coupons.coupon_type','coupons.coupon_rate')
-        // ->where('subscriptions.user_id',Auth::id())->first();
-        //  dd($subscribe);
+
         $subscribe = App\Models\User\Subscription::where('user_id', auth()->user()->id)->first();
 
     @endphp
@@ -139,7 +135,7 @@
                     <li><a class="item common-btn" href="#">Change Password</a></li>
                     <li><a class="item common-btn" href="#">Logout</a></li>
                 </ul>
-                
+
             </div>
             <div class="mobile-show-content">
                 <div class="dashboard__profile-content oder-details-ov-control">
@@ -159,7 +155,7 @@
                                     <h1 class="__box"><span class="text">Order No: </span><span class="__res">#2354 </span></h1>
                                     <p class="__p">$75.86 </p>
                                 </div>
-                                <a href="#" class="common-btn">Review</a> 
+                                <a href="#" class="common-btn">Review</a>
                             </div>
                         </div>
 
@@ -173,7 +169,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                
+
                                     <tr>
                                         <td>V. 6.25</td>
                                         <td>12 Jan, 2020</td>
@@ -194,8 +190,8 @@
                                         <td>12 Jan, 2020</td>
                                         <td><button class="common-btn"><i class="fa-solid fa-download"></i></button></td>
                                     </tr>
-                                    
-                                        
+
+
                                 </tbody>
                             </table>
                         </div>
@@ -253,7 +249,7 @@
                                                     <h1 class="__box"><span class="text">Order No: </span><span class="__res">#2354 </span></h1>
                                                     <p class="__p">$75.86 </p>
                                                 </div>
-                                               <a href="#" class="common-btn">Review</a> 
+                                               <a href="#" class="common-btn">Review</a>
                                             </div>
                                         </div>
 
@@ -267,7 +263,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                
+
                                                     <tr>
                                                         <td>V. 6.25</td>
                                                         <td>12 Jan, 2020</td>
@@ -288,8 +284,8 @@
                                                         <td>12 Jan, 2020</td>
                                                         <td><button class="common-btn"><i class="fa-solid fa-download"></i></button></td>
                                                     </tr>
-                                                    
-                                                        
+
+
                                                 </tbody>
                                             </table>
                                         </div>
@@ -300,7 +296,7 @@
                     </div>
                 </div>
 
-                
+
 
             </div>
         </div>

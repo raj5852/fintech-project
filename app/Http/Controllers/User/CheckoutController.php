@@ -17,6 +17,7 @@ use App\Models\CryptoAddress;
 use App\Models\CryptoOrder;
 use App\Models\CryptoOrderDetails;
 use App\Models\NowPaymentOrder;
+use App\Services\User\UserActiveMembership;
 use Cart;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Carbon;
@@ -128,6 +129,7 @@ class CheckoutController extends Controller
                 $orderDetails->product_qty = 1;
                 $orderDetails->unit_price = $unit_price[$key];
                 $orderDetails->product_price = $unit_price[$key];
+                $orderDetails->membership_id = UserActiveMembership::checkProductMembership($product_id[$key],Auth::id()) ;
 
                 $orderDetails->save();
             }
@@ -167,7 +169,6 @@ class CheckoutController extends Controller
     public function store(Request $request)
     {
         if ($request->payment_method) {
-            // return $request->product_qty;
 
             $request->validate([
                 'product_url' => 'array',
@@ -265,8 +266,8 @@ class CheckoutController extends Controller
                         $orderDetails->product_id = $product_id[$key];
                         $orderDetails->product_qty = 1;
                         $orderDetails->unit_price = $unit_price[$key];
-                        // $orderDetails->product_price = $unit_price[$key] * $request->product_qty[$key];
                         $orderDetails->product_price = $unit_price[$key];
+                        $orderDetails->membership_id = UserActiveMembership::checkProductMembership($product_id[$key],Auth::id()) ;
 
                         $orderDetails->save();
                     }
@@ -361,6 +362,7 @@ class CheckoutController extends Controller
                 $jsonResult =  $responseData['invoice_url'];
                 return redirect($jsonResult);
             } elseif ($request->payment_method == 8) {
+
                 session()->forget('nopayment_product_url');
                 session(['nopayment_product_url' => $product_url]);
 
@@ -482,6 +484,7 @@ class CheckoutController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function subscriptionStore(Request $request)
     {
         // return $request->all();

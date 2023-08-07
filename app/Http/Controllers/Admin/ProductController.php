@@ -16,6 +16,7 @@ use App\Models\Admin\OrderDetails;
 use App\Models\User;
 use App\Notifications\NewProductNotification;
 use App\Notifications\ProductUpdateNotification;
+use App\Services\Admin\ProductService;
 use Carbon\Carbon;
 use File;
 use Illuminate\Support\Facades\DB;
@@ -152,20 +153,8 @@ class ProductController extends Controller
 
         // $product = Product::first();
 
+        ProductService::membershipNotification($product);
 
-        $mailsubject =  'TExclusive Announcement: Fresh ' . $product->product_name . ' Now Available in Your Membership!';
-
-        if ($request->memberships != \null && $product->status != 0) {
-            $productUsers =  User::whereIn('subscribe_id', $request->memberships)
-                ->whereHas('hasOneSub', function ($query) {
-                    $query->where('monthly_charge_date', '>', Carbon::now()->toDateString());
-                })->with('member:id,membership_name')
-                ->chunk(100, function ($users) use ($product, $mailsubject) {
-                    foreach ($users as $user) {
-                        Notification::send($user, new NewProductNotification($user, $product, $mailsubject));
-                    }
-                });
-        }
 
 
 
@@ -324,26 +313,7 @@ class ProductController extends Controller
         $formattedDate = $currentDate->format('Y-m-d');
 
         if ($is_link_updated == 1 && $data->status == 1) {
-
-            $mailsubject =  'Exciting News! Discover the ' . $product->product_name . ' Update!';
-
-
-
-
-            OrderDetails::where('product_id', $id)
-                ->WhereHas('order', function ($quey) use ($formattedDate) {
-                    $quey->where('subscribe_id',  'General  Member')
-                        ->orWhereHas('user.hasOneSub', function ($quey) use ($formattedDate) {
-                            $quey->where('expire_date', '>',  $formattedDate);
-                        });
-                })->with('order.user.hasOneSub')
-                ->chunk(100, function ($orderdetails) use ($product, $mailsubject) {
-
-                    foreach ($orderdetails as $orderDetail) {
-
-                        Notification::send($orderDetail->order->user, new ProductUpdateNotification($orderDetail->order->user, $product, $mailsubject));
-                    }
-                });
+            ProductService::editProductNotification($product);
         }
 
 
@@ -403,7 +373,7 @@ class ProductController extends Controller
         return back();
     }
 
-   function stausChange($productId, $statusId)
+    function stausChange($productId, $statusId)
     {
         $product = Product::findOrFail($productId);
         if ($product) {

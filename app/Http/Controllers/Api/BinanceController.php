@@ -12,6 +12,7 @@ use App\Models\RequestBooking;
 use App\Models\User;
 use App\Models\User\Recharge;
 use App\Models\User\Subscription;
+use App\Services\User\UserActiveMembership;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -22,40 +23,7 @@ class BinanceController extends Controller
     function index(Request $request)
     {
 
-        //  $webhookResponse = $request->getContent();
         $webhookResponse = $request->all();
-
-        // $response = Http::get('https://webhook.site/8f8e93fe-f6e7-4026-8fb3-7b9322b1f770?binance=test&response=' . $webhookResponse);
-
-        // Log::info($webhookResponse);
-
-        // return $callbackResponse;
-
-        // return $callbackResponse;
-        // $logFile = "binancePayWebhookCallbackFile.json";
-
-        // Storage::append($logFile, $callbackResponse);
-
-        // // Additional processing or response handling if needed
-
-        // return response()->json(['message' => 'Callback response logged.']);
-        //  $ip = $request->ip();
-        // header("Content-Type: application/json");
-
-        // $webhookResponse = $request->all();
-
-        // $queryString = http_build_query($webhookResponse);
-
-
-
-        // if ($request->isMethod('post')) {
-        //     return $response;
-        // }
-
-        // return $queryString;
-
-        // Log::info($webhookResponse);
-
 
 
         if ($webhookResponse['bizStatus'] == 'PAY_SUCCESS') {
@@ -107,6 +75,8 @@ class BinanceController extends Controller
                     $orderDetails->product_qty = json_decode($now_pay_order->product_quantity)[$key];
                     $orderDetails->unit_price = $value->discount_price; //pb
                     $orderDetails->product_price = ($value->discount_price * json_decode($now_pay_order->product_quantity)[$key]);
+                    $orderDetails->membership_id = UserActiveMembership::checkProductMembership($now_pay_order->product_id[$key],$user->id) ;
+
                     $orderDetails->save();
                 }
 
@@ -132,7 +102,6 @@ class BinanceController extends Controller
                 ]);
             }
             if ($now_pay_order->type == 'request_product') {
-                // $user = User::find($now_pay_order->user_id);
 
                 $orders =  RequestBooking::find($now_pay_order->request_booking_id);
                 $orders->customer_price = $now_pay_order->total_price;
@@ -163,6 +132,25 @@ class BinanceController extends Controller
                     'is_binance_payment' => 1
                 ]);
             }
+            if($now_pay_order->type == 'renew' && $now_pay_order->payment_method == 'Binance'){
+
+                $subscription = Subscription::where('user_id',$now_pay_order->user_id)->first();
+
+                if($now_pay_order->renew['yearly_date'] != null){
+                    $subscription->expire_date = $now_pay_order->renew['yearly_date'];
+                }
+
+                if($now_pay_order->renew['monthly_date'] != null){
+                    $subscription->monthly_charge_date = $now_pay_order->renew['monthly_date'];
+                }
+
+                $subscription->save();
+
+                $now_pay_order->update([
+                    'is_binance_payment' => 1
+                ]);
+            }
+
         }
     }
 }

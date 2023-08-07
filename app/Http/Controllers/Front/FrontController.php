@@ -24,6 +24,7 @@ use App\Models\Admin\AboutOne;
 use App\Models\Admin\Medicine;
 use App\Models\FixedSpecification;
 use App\Services\Frontend\ShopService;
+use App\Services\Frontend\UserProfileService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Image;
@@ -98,9 +99,10 @@ class FrontController extends Controller
         $product = Product::where([
             'product_slug' => $product_slug,
             'status' => 1,
-        ])->firstOrFail();
+        ])
+        ->firstOrFail();
 
-        // return $product;
+
 
         $latest_product = Product::where('product_slug', '!=', $product_slug)
             ->latest()
@@ -115,7 +117,11 @@ class FrontController extends Controller
             ->telegram()
             ->whatsapp();
 
-        return view('front.product_details', compact('product', 'latest_product', 'shareComponent', 'fixeds'));
+        $userType = auth()->check() ? auth()->user()->type : 0;
+        $userId = auth()->check() ? auth()->user()->id : 0;
+
+
+        return view('front.product_details', compact('product', 'latest_product', 'shareComponent', 'fixeds','userType','userId'));
     }
 
     /**
@@ -369,9 +375,17 @@ class FrontController extends Controller
     {
         return view('front.discussionDetails');
     }
-    public function renew_membership()
+    public function renew_membership(UserProfileService $uerProfileService)
     {
-        return view('front.renew_membership');
+        $userDetails = $uerProfileService->userWithMembership();
+
+        if ($userDetails->memberships_exists != true && $userDetails ?->memberships[0]?->pivot?->is_life_time != 0) {
+            return redirect('/user/home')->with('error', 'You have no access');
+        }
+
+        $membership =  $uerProfileService->userMembership();
+
+        return view('front.renew_membership', compact('membership'));
     }
     public function preorder_view()
     {

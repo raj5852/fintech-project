@@ -392,139 +392,20 @@
                         <div class="discussion-wrap">
                             <!-- all comments  -->
                             <div class="all-comments-wrap abs-cus-dp-item">
-                                <div class="comments-items">
-
-                                    <!-- single comment  -->
-                                    <div class="comment">
-                                        <div class="__left">
-                                            <img src="" alt="">
-                                        </div>
-                                        <div class="__right">
-                                            <div class="__content">
-                                                <div class="__top">
-                                                    <div class="info">
-                                                        <h1 class="name">MD Rakib Shekh</h1>
-                                                        <p class="date">02 Feb, 2023</p>
-                                                    </div>
-                                                    <div class="ico">
-                                                        <div class="dropdown">
-                                                            <button class="dropdown-toggle" type="button"
-                                                                data-bs-toggle="dropdown" aria-expanded="false">
-                                                                <i class="fa-solid fa-ellipsis-vertical"></i>
-                                                            </button>
-                                                            <ul class="dropdown-menu">
-                                                                <li><button class="dropdown-item" href="#">
-                                                                        <span><i class="fa-solid fa-trash-can"></i></span>
-                                                                        <span>Delete Comment</span>
-                                                                    </button>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <p class="__com">Lorem ipsum dolor sit amet consectetur. Eros mattis
-                                                    pulvinar ultrices quis. Eu at quis consequat ullamcorper nunc facilisis
-                                                    congue imperdiet. Lorem ipsum dolor sit amet consectetur. Eros mattis
-                                                    pulvinar ultrices quis. Eu at quis consequat ullamcorper nunc facilisis
-                                                    congue imperdiet.</p>
+                                <div class="comments-items" id="comments">
 
 
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-                                    <!-- single comment  -->
-                                    <div class="comment">
-                                        <div class="__left">
-                                            <img src="" alt="">
-                                        </div>
-                                        <div class="__right">
-                                            <div class="__content">
-                                                <div class="__top">
-                                                    <div class="info">
-                                                        <h1 class="name">MD Rakib Shekh</h1>
-                                                        <p class="date">02 Feb, 2023</p>
-                                                    </div>
-                                                    <div class="ico">
-                                                        <div class="dropdown">
-                                                            <button class="dropdown-toggle" type="button"
-                                                                data-bs-toggle="dropdown" aria-expanded="false">
-                                                                <i class="fa-solid fa-ellipsis-vertical"></i>
-                                                            </button>
-                                                            <ul class="dropdown-menu">
-                                                                <li><button class="dropdown-item" href="#">
-                                                                        <span><i class="fa-solid fa-trash-can"></i></span>
-                                                                        <span>Delete Comment</span>
-                                                                    </button>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <p class="__com">Lorem ipsum dolor sit amet consectetur. Eros mattis
-                                                    pulvinar ultrices quis. Eu at quis consequat ullamcorper nunc facilisis
-                                                    congue imperdiet. Lorem ipsum dolor sit amet consectetur. Eros mattis
-                                                    pulvinar ultrices quis. Eu at quis consequat ullamcorper nunc facilisis
-                                                    congue imperdiet.</p>
-
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-                                    <!-- single comment  -->
-                                    <div class="comment">
-                                        <div class="__left">
-                                            <img src="" alt="">
-                                        </div>
-                                        <div class="__right">
-                                            <div class="__content">
-                                                <div class="__top">
-                                                    <div class="info">
-                                                        <h1 class="name">MD Rakib Shekh</h1>
-                                                        <p class="date">02 Feb, 2023</p>
-                                                    </div>
-                                                    <div class="ico">
-                                                        <div class="dropdown">
-                                                            <button class="dropdown-toggle" type="button"
-                                                                data-bs-toggle="dropdown" aria-expanded="false">
-                                                                <i class="fa-solid fa-ellipsis-vertical"></i>
-                                                            </button>
-                                                            <ul class="dropdown-menu">
-                                                                <li><button class="dropdown-item" href="#">
-                                                                        <span><i class="fa-solid fa-trash-can"></i></span>
-                                                                        <span>Delete Comment</span>
-                                                                    </button>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <p class="__com">Lorem ipsum dolor sit amet consectetur. Eros mattis
-                                                    pulvinar ultrices quis. Eu at quis consequat ullamcorper nunc facilisis
-                                                    congue imperdiet. Lorem ipsum dolor sit amet consectetur. Eros mattis
-                                                    pulvinar ultrices quis. Eu at quis consequat ullamcorper nunc facilisis
-                                                    congue imperdiet.</p>
-
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
 
                                 </div>
                             </div>
 
                             <div class="discussion-comment-ab">
-                                <form class="boxs-ab" action="">
+                                <form class="boxs-ab" id="comment-form" action="{{ route('comment-to-product') }}"
+                                    method="post">
+                                    @csrf
                                     <label for="comment-dis-i">Leave your Comment</label>
-                                    <textarea name="" id="comment-dis-i" placeholder="Type Your Comment here ..." cols="30" rows="8"></textarea>
+                                    <input type="hidden" name="productId" value="{{ $product->id }}">
+                                    <textarea name="comment" id="comment-dis-i" placeholder="Type Your Comment here ..." cols="30" rows="8"></textarea>
                                     <button class="common-btn" type="submit">Submit</button>
                                 </form>
                             </div>
@@ -651,6 +532,151 @@
                         $('.cart_list_popup').html(data)
                     },
                 });
+
+
+                // Delete comment
+                $(document).on('click', '.delete-comment', function() {
+                    var commentId = $(this).data('id');
+                    var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+                    $.ajax({
+                        url: '{{ route('comment.delete') }}',
+                        method: 'POST',
+                        data: {
+                            commentId: commentId
+                        },
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+                        },
+                        success: function(response) {
+                            fetchComments();
+                            toastr.success('Comment Deleted!', 'Success');
+
+                        }
+                    });
+                });
+
+                fetchComments();
+
+
+
+                function fetchComments() {
+
+
+                    var productId = {{ $product->id }};
+                    // var authcheck = {{ authcheck() }};
+                    // var userId = {{ $userId }};
+
+
+                    $.ajax({
+                            url: '{{ route('product.commnets') }}', // Update with your actual route
+                            method: 'GET',
+                            data: {
+                                product_id: productId
+                            }, // Pass the product ID as a parameter
+                            success: function(response) {
+                                var commentsHtml = '';
+
+                                response.forEach(function(comment) {
+                                        var deleteButton = '';
+
+                                        // Check if the user is authenticated
+                                        @auth
+                                        // Check if the user is an admin or the owner of the comment
+                                        if ('{{ auth()->check() }}' && (
+                                                '{{ auth()->user()->type }}' === 'admin' || comment
+                                                .user_id === {{ auth()->user()->id }})) {
+                                            deleteButton =
+                                                `
+                                                <div class="ico">
+                                                        <div class="dropdown">
+                                                            <button class="dropdown-toggle" type="button"
+                                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                                                            </button>
+                                                            <ul class="dropdown-menu">
+                                                                <li><button class="dropdown-item delete-comment" href="#"  data-id="${comment.id}">
+                                                                        <span><i class="fa-solid fa-trash-can"></i></span>
+                                                                        <span>Delete Comment</span>
+                                                                    </button>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    `;
+                                        }
+                                    @endauth
+
+                                    commentsHtml += `
+                                    <div class="comment">
+                                        <div class="__left">
+                                            <img src="{{ asset('${comment.user.image}') }}" alt="">
+                                        </div>
+                                        <div class="__right">
+                                            <div class="__content">
+                                                <div class="__top">
+                                                    <div class="info">
+                                                        <h1 class="name">${comment.user.name}</h1>
+                                                        <p class="date">${comment.formatted_date}</p>
+                                                    </div>
+                                                    ${deleteButton}
+                                                </div>
+
+                                                <p class="__com"> ${comment.comment} .</p>
+
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                `;
+                                });
+
+                                $('#comments').html(commentsHtml);
+                        },
+
+                        error: function(error) {
+
+                        }
+                    });
+            }
+
+
+            $('#comment-form').submit(function(event) {
+                event.preventDefault();
+                var auth = {{ authcheck() }}
+                if (auth != 1) {
+                    toastr.warning('Login to continue!', 'Alert');
+
+                }
+
+
+                var csrfToken = $('[name=csrfmiddlewaretoken]')
+                    .val(); // Get CSRF token from the hidden input field
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: '{{ route('comment-to-product') }}',
+                    method: 'POST',
+                    headers: {
+                        "X-CSRFToken": csrfToken
+                    }, // Include the CSRF token in the request headers
+                    data: formData,
+                    success: function(response) {
+                        $('#comment-dis-i').val('');
+
+                        fetchComments();
+                        toastr.success('Comment added successfully!', 'Success');
+                    },
+                    error: function(error) {
+                        // Handle error
+                    }
+                });
+            });
+
+
+
             })
         </script>
 

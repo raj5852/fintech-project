@@ -278,14 +278,44 @@ function isProductPurchased($productId)
     return $isPurchased;
 }
 
-function isProductWishlist($product_id) {
+function isProductWishlist($product_id)
+{
 
     $isWishlist = "";
 
     if (Auth::check()) {
-        $isWishlist = WishList:: where('product_id', $product_id)
-        ->where('user_id', Auth::id())
-        ->exists();
+        $isWishlist = WishList::where('product_id', $product_id)
+            ->where('user_id', Auth::id())
+            ->exists();
     }
     return $isWishlist;
+}
+
+if (!function_exists('YearMonthDate')) {
+
+    function YearMonthDate($value)
+    {
+        $carbonDate = \Carbon\Carbon::parse($value);
+
+        return $carbonDate->toDateString();
+    }
+}
+if (!function_exists('HumanReadableDate')) {
+    function HumanReadableDate($value)
+    {
+        return  $formattedDate = Carbon::parse($value)->isoFormat('DD MMM, YYYY');
+    }
+}
+
+
+if (!function_exists('authcheck')) {
+    function authcheck(){
+        return auth()->check() ? 1 : 0;
+    }
+}
+
+if (!function_exists('usertype')) {
+    function usertype(){
+        return auth()->user()->type;
+    }
 }

@@ -9,7 +9,7 @@
         @include('alert.alert')
     </div>
     @php
-         $membership = App\Models\Admin\Membership::find($data['membershipid']);
+        $membership = App\Models\Admin\Membership::find($data['membershipid']);
     @endphp
     <!-- contact form  -->
     <div class="contact__form">
@@ -31,35 +31,37 @@
 
                                             <label>Amount</label>
                                             @if ($data['is_lifetime'] ?? 0 == 1)
-                                            <input type="number" style="font-size: 16px" name="total_subscription_fee" id="total_subscription_fee" value="{{ $membership->life_time_charge  }}" readonly>
-
+                                                <input type="number" style="font-size: 16px" name="total_subscription_fee"
+                                                    id="total_subscription_fee" value="{{ $membership->life_time_charge }}"
+                                                    readonly>
                                             @else
-
-                                            <input type="number" style="font-size: 16px" name="total_subscription_fee" id="total_subscription_fee" value="{{ $membership->membership_price + $membership->monthly_charge }}" readonly>
-
+                                                <input type="number" style="font-size: 16px" name="total_subscription_fee"
+                                                    id="total_subscription_fee"
+                                                    value="{{ $membership->membership_price + $membership->monthly_charge }}"
+                                                    readonly>
                                             @endif
-                                            <input type="hidden" value="{{ $membership->monthly_charge }}" id="monthly_charge">
-                                            <input type="hidden" name="membership_id" value="{{ encrypt($membership->id) }}">
-                                            <input type="hidden" name="is_lifetime" value="{{ $data['is_lifetime'] ?? 0 }}">
+                                            <input type="hidden" value="{{ $membership->monthly_charge }}"
+                                                id="monthly_charge">
+                                            <input type="hidden" name="membership_id"
+                                                value="{{ encrypt($membership->id) }}">
+                                            <input type="hidden" name="is_lifetime"
+                                                value="{{ $data['is_lifetime'] ?? 0 }}">
                                         </div>
 
 
-                                        @if($membership->monthly_charge > 0 )
-
-                                        @if ($data['is_lifetime'] ?? 0 == 1)
-                                        @else
-                                            <div class="col contact__form-field field-2">
-                                                <label>Select Month</label>
-                                                <div class="d-flex">
-                                                    <button id="decrement" type="button" class="common_btn">-</button>
-                                                    <input style="font-size: 16px" id="monthValue" class="form-control" type="number" value="1"
-                                                        readonly name="total_month">
-                                                    <button id="increment" class="common_btn" type="button">+</button>
+                                        @if ($membership->monthly_charge > 0)
+                                            @if ($data['is_lifetime'] ?? 0 == 1)
+                                            @else
+                                                <div class="col contact__form-field field-2">
+                                                    <label>Select Month</label>
+                                                    <div class="d-flex">
+                                                        <button id="decrement" type="button" class="common_btn">-</button>
+                                                        <input style="font-size: 16px" id="monthValue" class="form-control"
+                                                            type="number" value="1" readonly name="total_month">
+                                                        <button id="increment" class="common_btn" type="button">+</button>
+                                                    </div>
                                                 </div>
-                                            </div>
-
-                                        @endif
-
+                                            @endif
                                         @endif
 
 
@@ -82,8 +84,8 @@
                                             src="{{ asset('frontend/') }}/2.png" width="80" alt="Strip"></span>
 
                                     <span class="payment-select" data-id="8" style=" cursor: pointer; "><img
-                                        src="{{asset('frontend/binance.png')}}" style="max-width: 120px"
-                                        alt="Binance"></span>
+                                            src="{{ asset('frontend/binance.png') }}" style="max-width: 120px"
+                                            alt="Binance"></span>
 
                                     <span class="payment-select" data-id="7" style=" cursor: pointer; "><img
                                             src="{{ asset('frontend/') }}/payment/crypto.png" height="50px;" width="100px;"
@@ -92,7 +94,8 @@
                                             src="{{ asset('frontend/') }}/5.png" height="50px;" width="100px;"
                                             alt=""></span>
 
-                                    <span class="payment-select-disabled" data-id="6" style=" cursor: not-allowed; background:rgb(183, 183, 183) "><img
+                                    <span class="payment-select-disabled" data-id="6"
+                                        style=" cursor: not-allowed; background:rgb(183, 183, 183) "><img
                                             src="{{ asset('frontend/') }}/payment/others.png" height="50px;" width="100px;"
                                             alt="EdokanPayment"></span>
                                     <input type="hidden" class="payment-method" name="payment_method">

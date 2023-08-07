@@ -34,6 +34,9 @@ class Order extends Model
     {
         return $this->belongsTo('App\Models\Admin\Product','product_id','id');
     }
+    function products(){
+        return $this->belongsToMany(Product::class,'order_details','order_id','product_id');
+    }
     function orderDetails(){
         return $this->hasMany(OrderDetails::class,'order_id','id');
     }

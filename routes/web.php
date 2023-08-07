@@ -35,6 +35,7 @@ use App\Http\Controllers\Admin\MedicineController;
 use App\Http\Controllers\Admin\MembershipController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\RequestProductController as ReqProductController;
+use App\Http\Controllers\AdminAndUser\CommentController as AdminAndUserCommentController;
 use App\Http\Controllers\Api\BinanceController;
 //----Front-----
 use App\Http\Controllers\Front\FrontController;
@@ -58,30 +59,26 @@ use App\Http\Controllers\RequestController;
 
 
 use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\Frontend\CommentController;
+use App\Http\Controllers\Frontend\RenewController;
 use App\Http\Controllers\NowPaymentRedirectController;
 use App\Http\Controllers\User\NotificationController as UserNotificationController;
 use App\Http\Controllers\User\ResetController;
+use App\Models\Admin\Membership;
+use App\Models\Admin\OrderDetails;
 use App\Models\Admin\Product;
 use App\Models\NowPaymentOrder;
 use App\Models\User;
 use App\Models\User\Subscription;
 use App\Notifications\ProductUpdateNotification;
+use App\Services\Frontend\UserProfileService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+
 
 
 Auth::routes();
@@ -105,7 +102,6 @@ Route::get('/customer-request', [FrontController::class, 'customerRequest'])->na
 Route::get('/product/details/{product_slug}', [FrontController::class, 'productDetails'])->name('product.details');
 Route::get('/discussion', [FrontController::class, 'discussion'])->name('discussion');
 Route::get('/discussionDetails', [FrontController::class, 'discussionDetails'])->name('discussionDetails');
-Route::get('/renew-membership', [FrontController::class, 'renew_membership'])->name('renew_membership');
 Route::get('/preorder-view', [FrontController::class, 'preorder_view'])->name('preorder_view');
 Route::get('/license', [FrontController::class, 'license'])->name('license');
 Route::get('/preorder-details/{slug}', [FrontController::class, 'preorder_details'])->name('preorder_details');
@@ -128,7 +124,7 @@ Route::post('/subscriber/store', [FrontController::class, 'subscriberStore']);
 
 Route::get('/member/product/{id}', [FrontController::class, 'MenberProduct']);
 
-//---Social Login Route---
+// ---Social Login Route---
 Route::controller(GoogleController::class)->group(function () {
     Route::get('auth/google', 'redirectToGoogle')->name('auth.google');
     Route::get('auth/google/callback', 'handleGoogleCallback');
@@ -270,7 +266,20 @@ Route::prefix('user')->middleware(['auth', 'user-access:user', 'verified'])->gro
 
     Route::get('load-notifications', [UserNotificationController::class, 'index'])->name('notification.load-more');
     Route::get('product-link/{id}', [UserNotificationController::class, 'productLink'])->name('notification.product-link');
+    Route::get('/renew-membership', [FrontController::class, 'renew_membership'])->name('renew_membership');
+    Route::post('renew-membership', [RenewController::class, 'store'])->name('user.renew-store');
+
+    //comment
+    // Route::get('product-comment',[CommentController::class,'comments'])->name('product.commnets');
 });
+
+Route::middleware(['auth'])->group(function () {
+    Route::post('comment-delete', [AdminAndUserCommentController::class, 'delete'])->name('comment.delete');
+    Route::post('comment-to-product', [AdminAndUserCommentController::class, 'store'])->name('comment-to-product');
+});
+
+
+Route::get('product-comments', [CommentController::class, 'comments'])->name('product.commnets');
 
 /*------------------------------------------
 --------------------------------------------
@@ -571,12 +580,24 @@ Route::get('migrate', function () {
 });
 
 Route::get('demo', function () {
+    $now = now();
+    echo User::query()
+        ->WhereHas('memberships', function ($query)  use($now){
+            $query->Where(function ($query) use ($now) {
+                $query->where('memberships.monthly_charge', 0)
+                    ->whereDate('subscriptions.expire_date', $now);
+            })
+            ->orWhere(function($query) use ($now){
+                $query->where('memberships.monthly_charge','!=',0)
+                ->whereDate('monthly_charge_date', $now);
+            });
+        })->get(['id','email']);
 
-    // $user = new User();
-    // $user->name = 'demo';
-    // $user->email = 'demo@gmail.com';
-    // $user->type = 'user';
-    // $user->password = bcrypt('demo@gmail.com');
-    // $user->save();
+    // return auth()->user();
+
+
+
+
+
 
 });

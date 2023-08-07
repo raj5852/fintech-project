@@ -3,6 +3,7 @@
 namespace App\Models\Admin;
 
 use App\Models\Review;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,5 +26,8 @@ class OrderDetails extends Model
     public function review()
     {
         return $this->hasOne('App\Models\Review', 'order_detail_id', 'id');
+    }
+    function membership(){
+        return $this->belongsTo(User::class);
     }
 }

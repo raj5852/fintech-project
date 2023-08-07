@@ -11,6 +11,7 @@ use App\Models\Admin\Product;
 use App\Models\User;
 use App\Models\User\Subscription;
 use App\Services\Backend\PendingUserService;
+use App\Services\Frontend\UserProfileService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,83 +32,45 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index(UserProfileService $userProfileService)
     {
+         $userDetails =  $userProfileService->userWithMembership();
+        return view('user.home', compact('userDetails'));
 
-
-        $products = Product::where('is_free', 1)->get();
-
-
-
-        $UserMemberShipId = User::find(auth()->user()->id)->subscribe_id;
-
-
-
-        if ($UserMemberShipId > 0) {
-            //   $monthleyCharge =   User::find(auth()->user()->id)->hasOneSub->monthly_charge_date;
-            if (user_month_expires() == 0) {
-                $memberShipProducts = Membership::find($UserMemberShipId)->latestProduct;
-            } else {
-                $memberShipProducts = [];
-            }
-        } else {
-            $memberShipProducts = [];
-        }
-
-        $userProducts = User::find(auth()->user()->id)
-            ->load(['hasOneSub', 'orderDetails' => function ($query) {
-                $query->with(['product', 'order']);
-            }]);
-
-
-
-
-
-
-        // $productURL =  array_keys($order->product ?->product_url);
-        // $productLastUrl = end($productURL);
-
-
-        return view('user.home', compact('products', 'userProducts', 'memberShipProducts'));
     }
 
-    public function myOrders() {
-        $userProducts = User::find(auth()->user()->id)
-            ->load(['hasOneSub', 'orderDetails' => function ($query) {
-                $query->with(['product', 'order']);
-            }]);
-        return view('user.myOrders', compact('userProducts'));
-    }
-    public function myOrderDetails($id) {
-        return view('user.myOrderDetails');
-    }
-    public function myWallet() {
-        return view('user.myWallet');
-    }
-    public function myWishlist() {
-        return view('user.myWishlist');
-    }
-    public function membershipProduct() {
+    public function myOrders(UserProfileService $userProfileService) {
+        $userDetails =  $userProfileService->userWithMembership();
+        $orders =  $userProfileService->userOrders();
 
-
-        $UserMemberShipId = User::find(auth()->user()->id)->subscribe_id;
-
-
-
-        if ($UserMemberShipId > 0) {
-            //   $monthleyCharge =   User::find(auth()->user()->id)->hasOneSub->monthly_charge_date;
-            if (user_month_expires() == 0) {
-                $memberShipProducts = Membership::find($UserMemberShipId)->latestProduct->toQuery()->paginate(6)->onEachSide(2);
-            } else {
-                $memberShipProducts = [];
-            }
-        } else {
-            $memberShipProducts = [];
-        }
-        return view('user.membershipProduct', compact('memberShipProducts'));
+        return view('user.myOrders', compact('userDetails','orders'));
     }
-    public function editProfile() {
-        return view('user.editProfile');
+    public function myOrderDetails(UserProfileService $userProfileService) {
+        $userDetails =  $userProfileService->userWithMembership();
+
+        return view('user.myOrderDetails',compact('userDetails'));
+    }
+
+    public function myWallet(UserProfileService $userProfileService) {
+        $userDetails =  $userProfileService->userWithMembership();
+
+        return view('user.myWallet',compact('userDetails'));
+    }
+    public function myWishlist(UserProfileService $userProfileService) {
+        $userDetails =  $userProfileService->userWithMembership();
+
+        return view('user.myWishlist',compact('userDetails'));
+    }
+    public function membershipProduct(UserProfileService $userProfileService) {
+        $userDetails =  $userProfileService->userWithMembership();
+        // $userProfileService->userMembershipProduct();
+
+        return view('user.membershipProduct', compact('userDetails'));
+    }
+    public function editProfile(UserProfileService $userProfileService) {
+        $userDetails =  $userProfileService->userWithMembership();
+
+        return view('user.editProfile',compact('userDetails'));
     }
     public function changePassword() {
         return view('user.changePassword');

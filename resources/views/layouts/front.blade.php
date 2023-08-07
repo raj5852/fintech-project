@@ -9,13 +9,13 @@
         ->get()
         ->skip(5);
 
-    // if(auth()->check()){
-    //     $notifications =   auth()->user()->notifications()->orderBy('created_at', 'desc')->limit(10)->get();
-    //     $notificationCount = auth()->user()->unreadnotifications()->count();
-    // }else{
-    //     $notifications = [];
-    //     $notificationCount = 0;
-    // }
+    if(auth()->check()){
+        $notifications =   auth()->user()->notifications()->orderBy('created_at', 'desc')->limit(10)->get();
+        $notificationCount = auth()->user()->unreadnotifications()->count();
+    }else{
+        $notifications = [];
+        $notificationCount = 0;
+    }
 
 @endphp
 <!DOCTYPE html>
@@ -53,7 +53,6 @@
     <link rel="stylesheet" href="{{ asset('frontend/css/slick.css') }}" />
     <link rel="stylesheet" href="{{ asset('frontend/css/slick-theme.css') }}" />
 
-    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="{{ asset('frontend/fav-icon.png') }}">
 
 
@@ -148,41 +147,20 @@
                                 <span href="#" class="nav__icon notification-wrap d-none-in650px ">
                                     <!-- <i class="fa-solid fa-bell"></i> -->
                                     <i class="fa-regular fa-bell d-none-in650px"></i>
-                                    <span class="notification-count">5</span>
+                                    <span class="notification-count">{{$notificationCount}}</span>
                                     <div class="get-all-notification">
 
-                                        <h1 class="notify-title">Notification (4)</h1>
+                                        <h1 class="notify-title">Notification {{$notificationCount}}</h1>
                                         <div class="all-notify-box">
-                                            <div class="item">
-                                                <p class="notify-txt">The new update of Bonnitta Gold MT4 has arrived
-                                                </p>
-                                                <p class="notify-time">8min</p>
-                                            </div>
-                                            <div class="item">
-                                                <p class="notify-txt">The new update of Bonnitta Gold MT4 has arrived
-                                                </p>
-                                                <p class="notify-time">8min</p>
-                                            </div>
-                                            <div class="item">
-                                                <p class="notify-txt">The new update of Bonnitta Gold MT4 has arrived
-                                                </p>
-                                                <p class="notify-time">8min</p>
-                                            </div>
-                                            <div class="item">
-                                                <p class="notify-txt">The new update of Bonnitta Gold MT4 has arrived
-                                                </p>
-                                                <p class="notify-time">8min</p>
-                                            </div>
-                                            <div class="item">
-                                                <p class="notify-txt">The new update of Bonnitta Gold MT4 has arrived
-                                                </p>
-                                                <p class="notify-time">8min</p>
-                                            </div>
-                                            <div class="item">
-                                                <p class="notify-txt">The new update of Bonnitta Gold MT4 has arrived
-                                                </p>
-                                                <p class="notify-time">8min</p>
-                                            </div>
+                                            @foreach ($notifications as $notification)
+                                                <div class="item">
+
+                                                    <p><a class="notify-txt" style="{{ $notification->read_at == null ? 'font-weight: bold':'color:#b4b4b4' }} " href="{{ route('notification.product-link',$notification->id) }}">{{ $notification->data['product_name'] }}</a>   </p>
+
+                                                    <p class="notify-time">{{ $notification->read_at->diffForHumans() }} </p>
+                                                </div>
+                                            @endforeach
+
                                         </div>
 
 

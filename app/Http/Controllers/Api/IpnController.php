@@ -12,6 +12,7 @@ use App\Models\RequestBooking;
 use App\Models\User;
 use App\Models\User\Recharge;
 use App\Models\User\Subscription;
+use App\Services\User\UserActiveMembership;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -71,6 +72,8 @@ class IpnController extends Controller
                     $orderDetails->product_qty = json_decode($now_pay_order->product_quantity)[$key];
                     $orderDetails->unit_price = $value->discount_price; //pb
                     $orderDetails->product_price = ($value->discount_price * json_decode($now_pay_order->product_quantity)[$key]);
+                    $orderDetails->membership_id = UserActiveMembership::checkProductMembership($now_pay_order->product_id[$key],$user->id) ;
+
                     $orderDetails->save();
                 }
 
@@ -119,6 +122,15 @@ class IpnController extends Controller
 
 
             }
+
+            if($now_pay_order->type == 'renew' ){
+                $subscription = Subscription::where('user_id',$now_pay_order->user_id)->first();
+                $subscription->expire_date = YearMonthDate($now_pay_order->renew['new_membership_date']);
+                $subscription->start_date = YearMonthDate($now_pay_order->created_at);
+                $subscription->save();
+
+            }
+
         }
     }
 }
