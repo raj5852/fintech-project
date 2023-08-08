@@ -33,7 +33,7 @@ class ProductUpdateNotification extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['database', 'mail'];
+        return ['mail'];
     }
 
     /**
@@ -57,13 +57,13 @@ class ProductUpdateNotification extends Notification implements ShouldQueue
      * @param  mixed  $notifiable
      * @return array
      */
-    public function toArray($notifiable)
-    {
-        return [
-            'user_id' => $this->user['id'],
-            'product_id' => $this->product->id,
-            'product_name' => 'The new update of ' . $this->product->product_name . ' has arrived',
-            'time' => time()
-        ];
-    }
+    // public function toArray($notifiable)
+    // {
+    //     return [
+    //         'user_id' => $this->user['id'],
+    //         'product_id' => $this->product->id,
+    //         'product_name' => 'The new update of ' . $this->product->product_name . ' has arrived',
+    //         'time' => time()
+    //     ];
+    // }
 }

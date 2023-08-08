@@ -68,14 +68,7 @@
 
     <main id="main" style="display:none" class="main">
         <!-- offer-notify -->
-        <div class="offer-notify">
-            <div class="_content">
-                <p class="__text">Offer!! If you purchased an expert somewhere else, you have probably paid full price.
-                </p>
-                <button onclick="this.parentElement.style.display='none';" class="__close"><i
-                        class="fa-solid fa-xmark"></i></button>
-            </div>
-        </div>
+        <x-offer/>
         <nav class="nav position-relative">
             <div class="main-nav">
                 <div class="container">
@@ -203,7 +196,7 @@
                                 @endif
 
                                 <!-- add preorder  -->
-                                <a href="#" class="d-none-in650px top-nav-btn-pre-order">
+                                <a href="{{ route('preorder_view') }}" class="d-none-in650px top-nav-btn-pre-order">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                         viewBox="0 0 16 16" fill="none">
                                         <path fill-rule="evenodd" clip-rule="evenodd"

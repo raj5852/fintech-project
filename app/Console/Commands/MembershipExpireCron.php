@@ -2,7 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Models\User;
+use App\Notifications\MemberExpireNotification;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Notification;
 
 class MembershipExpireCron extends Command
 {
@@ -27,6 +30,23 @@ class MembershipExpireCron extends Command
      */
     public function handle()
     {
-        return info('hello');
+        // return info('hello');
+        $now = now();
+        User::query()
+        ->WhereHas('memberships', function ($query)  use($now){
+            $query->Where(function ($query) use ($now) {
+                $query->where('memberships.monthly_charge', 0)
+                    ->whereDate('subscriptions.expire_date', $now);
+            })
+            ->orWhere(function($query) use ($now){
+                $query->where('memberships.monthly_charge','!=',0)
+                ->whereDate('monthly_charge_date', $now);
+            });
+        })
+        ->chunk(100, function ($users)  {
+            foreach ($users as $user) {
+                Notification::send($user, new MemberExpireNotification($user));
+            }
+        });
     }
 }

@@ -35,12 +35,30 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::latest()
+            ->where('pre_order_status', '==', 0)
+            ->orWhere('pre_order_status', null)
             ->when(request('search'), function ($query) {
                 return $query->where('product_name', 'like', '%' . request('search') . '%');
             })
             ->paginate(10)->withQueryString();
 
         return view('admin.product.index', compact('products'))->with('i', (request()->input('page', 1) - 1) * 10);
+    }
+
+    function preorders()
+    {
+
+        $products = Product::latest()
+            ->where('pre_order_status', 1)
+            ->with('category')
+            ->select('category_id', 'id', 'product_name', 'discount_price', 'pre_order_status', 'minimum_orders', 'thumbnail','status')
+            ->when(request('search'), function ($query) {
+                return $query->where('product_name', 'like', '%' . request('search') . '%');
+            })
+            ->withCount('orderItems')
+
+            ->paginate(10)->withQueryString();
+        return view('admin.product.preorders', compact('products'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
     /**
@@ -106,6 +124,8 @@ class ProductController extends Controller
         $data->membership_id  = json_encode($request->membership_id);
         $data->visibility         = $request->visibility;
         $data->is_free            = $request->is_free;
+        $data->pre_order_status = $request->preorder;
+        $data->minimum_orders = $request->minimum_orders;
         $data->product_url            =  array_combine($request->product_url, $request->product_version);
         if ($request->commission_rate != null) {
             if ($request->commission_type != null) {
@@ -152,12 +172,15 @@ class ProductController extends Controller
 
 
         // $product = Product::first();
+        if ($data->pre_order_status != 1) {
+            ProductService::membershipNotification($product);
+        }
 
-        ProductService::membershipNotification($product);
 
 
-
-
+        if ($data->pre_order_status == 1) {
+            return \to_route('product.preorders')->with($notification);
+        }
         return \to_route('index.product')->with($notification);
     }
 
@@ -257,6 +280,8 @@ class ProductController extends Controller
         $data->membership_id  = json_encode($request->membership_id);
         $data->description        = $request->description;
         $data->tag                = $request->tag;
+        $data->pre_order_status = $request->preorder;
+        $data->minimum_orders = $request->minimum_orders;
         $data->product_url            = array_combine($request->product_url, $request->product_version);
 
         if ($request->commission_rate != null) {
@@ -312,7 +337,16 @@ class ProductController extends Controller
         $currentDate = Carbon::now();
         $formattedDate = $currentDate->format('Y-m-d');
 
-        if ($is_link_updated == 1 && $data->status == 1) {
+        if($data->pre_order_status == 0 && $data->minimum_orders != 0){
+            ProductService::membershipNotification($product);
+
+            $data->minimum_orders = 0;
+             $data->save();
+        }
+
+
+
+        if ($is_link_updated == 1 && $data->status == 1 && $data->pre_order_status == 0) {
             ProductService::editProductNotification($product);
         }
 

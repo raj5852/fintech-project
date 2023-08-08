@@ -43,6 +43,16 @@
                     <form class="g-3" method="POST" action="{{ route('store.product') }}" enctype="multipart/form-data">
                         @csrf
                         <div class="row">
+
+                            <div class="col-md-8">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" name="preorder" type="checkbox" id="preorder"
+                                        value="1">
+                                    <label class="form-check-label" for="preorder">Preorder (click to Preorder)</label>
+                                </div>
+                            </div>
+                            <br><br><br>
+
                             <div class="col-md-8">
                                 <label for="productName" class="form-label">Product Name <sup
                                         class="text-danger">*</sup></label>
@@ -71,7 +81,7 @@
                             </div>
                         </div>
                         <div class="row mt-2">
-                            <div class="mb-3 select2-sm col-md-4">
+                            <div class="mb-3 select2-sm col-md-4" id="categoryItem">
                                 <label class="form-label">Category <sup class="text-danger">*</sup></label>
                                 <select class="single-select" name="category_id">
                                     <option value="" disabled selected>--Select--</option>
@@ -80,7 +90,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="mb-3 select2-sm col-md-4">
+                            <div class="mb-3 select2-sm col-md-4" id="subCategory" >
                                 <label class="form-label">Sub-category</label>
                                 <select class="single-select" name="subcategory_id">
 
@@ -88,7 +98,7 @@
 
                                 </select>
                             </div>
-                            <div class="mb-3 select2-sm col-md-4">
+                            <div class="mb-3 select2-sm col-md-4" id="brandItem">
                                 <label class="form-label">Brand</label>
                                 <select class="single-select" name="brand_id">
                                     <option value="" disabled selected>--Select--</option>
@@ -132,7 +142,7 @@
 
 
 
-                            <div class="mb-3 select2-sm col-md-4">
+                            <div class="mb-3 select2-sm col-md-4" id="membershipItem">
                                 <label class="form-label">For Membership <sup class="text-danger">*</sup></label>
                                 <select class="single-select" name="memberships[]" multiple>
 
@@ -160,7 +170,9 @@
 
                         </div>
                         <br>
-                        <div class="form-check form-switch">
+
+
+                        <div class="form-check form-switch" id="free_product">
                             <input class="form-check-input" name="is_free" type="checkbox" id="flexSwitchCheckChecked"
                                 value="1">
                             <label class="form-check-label" for="flexSwitchCheckChecked">Free Product</label>
@@ -179,7 +191,7 @@
                                 <small class="text-danger form-label">NB : Max size 2 MB. Must jpg jpeg png </small>
                             </div>
                         </div>
-                        <div class="row mt-3">
+                        <div class="row mt-3" id="Specification">
                             <div class="col-md-12 mt-2 row ">
                                 <lebel class="card-title">Specification <sup class="text-danger">*</sup></lebel>
                                 <table class="table" id="dynamic_field">
@@ -205,15 +217,15 @@
 
 
 
-                        <div class="row mt-3">
+                        <div class="row mt-3" id="product_url">
                             <div class="col-md-12 mt-2 row ">
                                 <lebel class="card-title">Product Link <sup class="text-danger">*</sup></lebel>
                                 <table class="table" id="dynamic_field_url">
                                     <tr>
                                         <td><input type="text" name="product_url[]" placeholder="Product URL"
-                                                class="form-control name_list" required /></td>
+                                                class="form-control name_list"  /></td>
                                         <td><input type="text" name="product_version[]" placeholder="Product Version"
-                                                class="form-control name_list" required /></td>
+                                                class="form-control name_list"  /></td>
                                         <td><button type="button" name="add" id="addurl"
                                                 class="btn btn-sm btn-success">Add</button></td>
                                     </tr>
@@ -241,7 +253,16 @@
                         </textarea>
                         </div>
 
-                        <div class="form-check form-switch">
+
+                        <div class="col-md-6"  id="minimum_orders">
+                            <label for="minimum_orders" class="form-label">Minimum orders <sup
+                                    class="text-danger">*</sup></label>
+                            <input type="number" class="form-control" placeholder="Enter Minimum orders(10)"
+                                name="minimum_orders" value="">
+                        </div>
+                        <br>
+
+                        <div class="form-check form-switch" id="Unpublish">
                             <input class="form-check-input" name="status" type="checkbox" id="status"
                                 value="0">
                             <label class="form-check-label" for="status">Unpublish (Click to unpublish)</label>
@@ -329,27 +350,47 @@
             // slug code
 
             $(document).ready(function() {
-      $('#productName').on('input', function() {
-        var productName = $(this).val();
-        var productSlug = slugify(productName);
-        $('#productSlug').val(productSlug);
-      });
-    });
+                $('#productName').on('input', function() {
+                    var productName = $(this).val();
+                    var productSlug = slugify(productName);
+                    $('#productSlug').val(productSlug);
+                });
+            });
 
-    function slugify(text) {
-      return text.toString().toLowerCase()
-        .replace(/\s+/g, '-')         // Replace spaces with -
-        .replace(/[^\w\-]+/g, '')     // Remove all non-word chars
-        .replace(/\-\-+/g, '-')       // Replace multiple - with single -
-        .replace(/^-+/, '')           // Trim - from start of text
-        .replace(/-+$/, '');          // Trim - from end of text
-    }
-
-
+            function slugify(text) {
+                return text.toString().toLowerCase()
+                    .replace(/\s+/g, '-') // Replace spaces with -
+                    .replace(/[^\w\-]+/g, '') // Remove all non-word chars
+                    .replace(/\-\-+/g, '-') // Replace multiple - with single -
+                    .replace(/^-+/, '') // Trim - from start of text
+                    .replace(/-+$/, ''); // Trim - from end of text
+            }
 
 
 
+            $(document).ready(function() {
+                // Initial state
+                $("#minimum_orders").hide();
 
+                // When checkbox is clicked
+                $("#preorder").on("click", function() {
+                    if ($(this).is(":checked")) {
+                        $("#product_url").hide();
+
+                        $("#minimum_orders").show();
+
+
+                    } else {
+
+                        $("#product_url").show();
+
+                        $("#minimum_orders").hide();
+
+
+
+                    }
+                });
+            });
         </script>
     @endpush
 

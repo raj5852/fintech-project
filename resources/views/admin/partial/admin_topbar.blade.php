@@ -1,6 +1,6 @@
 <!--start header -->
 @php
-    $orders=App\Models\Admin\Order::latest()->limit(50)->where('notification_status','0')->get();
+    $orders=App\Models\Admin\Order::latest()->limit(50)->with('user')->where('notification_status','0')->get();
     $notification_count =App\Models\Admin\Order::where('notification_status','0')->count();
 
 @endphp

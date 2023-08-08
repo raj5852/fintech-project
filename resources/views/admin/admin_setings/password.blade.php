@@ -68,6 +68,35 @@
 								</div>
 							</form>
 						</div>
+
+
+                        <div class="card">
+							<form action="{{route('admin.offer') }}" method="post">
+								@csrf
+								<div class="card-body">
+									<div class="row">
+                                        <h4>Offer</h4>
+										<div class="col-7">
+	                                       <textarea name="body" id="" cols="10" rows="5" class="form-control">{{$offer?->body}} </textarea>
+	                                    </div>
+
+									</div><br><br>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input"  {{ $offer?->status == 1 ? 'checked':'' }} name="status" type="checkbox" id="status"
+                                            value="1">
+                                        <label class="form-check-label" for="status"> (Click to publish)</label>
+                                    </div>
+									<br>
+									<div class="row">
+										<div class="col-sm-12 text-secondary">
+											<input type="submit" class="btn btn-primary px-4" value="Update" />
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+
+
 					</div>
 				</div>
 			</div>

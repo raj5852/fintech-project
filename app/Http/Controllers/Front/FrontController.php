@@ -25,6 +25,7 @@ use App\Models\Admin\Medicine;
 use App\Models\FixedSpecification;
 use App\Services\Frontend\ShopService;
 use App\Services\Frontend\UserProfileService;
+use App\Services\User\PreorderService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Image;
@@ -389,7 +390,8 @@ class FrontController extends Controller
     }
     public function preorder_view()
     {
-        return view('front.preorder_view');
+        $preorders =    PreorderService::index();
+        return view('front.preorder_view',compact('preorders'));
     }
     public function license()
     {
@@ -397,12 +399,15 @@ class FrontController extends Controller
     }
     public function preorder_details($slug)
     {
-        $product = Product::where([
+        $products = Product::where([
             'product_slug' => $slug,
             'status' => 1,
-        ])->firstOrFail();
+            'pre_order_status'=> 1
+        ])
+        ->with('category')
+        ->select('category_id', 'id', 'product_name',  'product_price','discount_price', 'pre_order_status', 'minimum_orders', 'thumbnail','images')
+        ->withCount('orders')->firstOrFail();
 
-        // return $product;
 
         $latest_product = Product::latest()
             ->take(4)
@@ -416,6 +421,6 @@ class FrontController extends Controller
             ->telegram()
             ->whatsapp();
 
-        return view('front.preorder_details', compact('product', 'latest_product', 'shareComponent', 'fixeds'));
+        return view('front.preorder_details', compact('products', 'latest_product', 'shareComponent', 'fixeds'));
     }
 }

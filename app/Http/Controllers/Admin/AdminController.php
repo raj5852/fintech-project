@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Offer;
 use Illuminate\Http\Request;
 use Auth;
 use Hash;
@@ -66,7 +67,8 @@ class AdminController extends Controller
      */
     public function changePassword()
     {
-        return view('admin.admin_setings.password');
+        $offer = Offer::first();
+        return view('admin.admin_setings.password',compact('offer'));
     }
 
     /**

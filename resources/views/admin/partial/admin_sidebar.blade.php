@@ -65,6 +65,8 @@
                 </li>
                 <li> <a href="{{ route('index.product') }}"><i class="bx bx-right-arrow-alt"></i>All Product</a>
                 </li>
+                <li> <a href="{{ route('product.preorders') }}"><i class="bx bx-right-arrow-alt"></i>Preorders</a>
+                </li>
                 <li> <a href="{{ route('specification.index') }}"><i class="bx bx-right-arrow-alt"></i>Fixed Specifications</a>
                 </li>
 

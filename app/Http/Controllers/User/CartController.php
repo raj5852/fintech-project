@@ -26,7 +26,7 @@ class CartController extends Controller
      */
     public function index()
     {
-        $data =  Cart::content();
+        $data =  FacadesCart::content();
         $productIds =  $data->pluck('id');
 
         if (auth()->user()) {

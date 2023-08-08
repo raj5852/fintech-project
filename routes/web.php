@@ -34,6 +34,7 @@ use App\Http\Controllers\Admin\ManageApiController;
 use App\Http\Controllers\Admin\MedicineController;
 use App\Http\Controllers\Admin\MembershipController;
 use App\Http\Controllers\Admin\NotificationController;
+use App\Http\Controllers\Admin\OfferController;
 use App\Http\Controllers\Admin\RequestProductController as ReqProductController;
 use App\Http\Controllers\AdminAndUser\CommentController as AdminAndUserCommentController;
 use App\Http\Controllers\Api\BinanceController;
@@ -63,6 +64,7 @@ use App\Http\Controllers\Frontend\CommentController;
 use App\Http\Controllers\Frontend\RenewController;
 use App\Http\Controllers\NowPaymentRedirectController;
 use App\Http\Controllers\User\NotificationController as UserNotificationController;
+use App\Http\Controllers\User\PreOrderController;
 use App\Http\Controllers\User\ResetController;
 use App\Models\Admin\Membership;
 use App\Models\Admin\OrderDetails;
@@ -269,8 +271,8 @@ Route::prefix('user')->middleware(['auth', 'user-access:user', 'verified'])->gro
     Route::get('/renew-membership', [FrontController::class, 'renew_membership'])->name('renew_membership');
     Route::post('renew-membership', [RenewController::class, 'store'])->name('user.renew-store');
 
-    //comment
-    // Route::get('product-comment',[CommentController::class,'comments'])->name('product.commnets');
+    // pre-order-payment
+    Route::get('pre-order-payment/{slug}', [PreOrderController::class, 'payment'])->name('pre-order-payment');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -319,6 +321,9 @@ Route::prefix('admin')->middleware(['auth', 'user-access:admin'])->group(functio
     Route::post('profile/update', [AdminController::class, 'adminProfileUpdate'])->name('update.profile');
     Route::get('password/change', [AdminController::class, 'changePassword'])->name('password.change');
     Route::post('password/update', [AdminController::class, 'updatePassword'])->name('admin.password.update');
+
+    // offer
+    Route::post('offer-created', [OfferController::class, 'store'])->name('admin.offer');
 
     Route::get('website/setting', [SettingController::class, 'WebSite'])->name('website.setting');
     Route::post('update/setting/{id}', [SettingController::class, 'SettingUpdate'])->name('update.setting');
@@ -380,6 +385,7 @@ Route::prefix('admin')->middleware(['auth', 'user-access:admin'])->group(functio
     Route::group(['prefix' => 'product'], function () {
         Route::get('create', [ProductController::class, 'create'])->name('create.product');
         Route::get('/', [ProductController::class, 'index'])->name('index.product');
+        Route::get('/preorders', [ProductController::class, 'preorders'])->name('product.preorders');
         Route::post('store', [ProductController::class, 'store'])->name('store.product');
         Route::get('view/{id}', [ProductController::class, 'show']);
         Route::get('edit/{id}', [ProductController::class, 'edit'])->name('edit.product');
@@ -580,24 +586,6 @@ Route::get('migrate', function () {
 });
 
 Route::get('demo', function () {
-    $now = now();
-    echo User::query()
-        ->WhereHas('memberships', function ($query)  use($now){
-            $query->Where(function ($query) use ($now) {
-                $query->where('memberships.monthly_charge', 0)
-                    ->whereDate('subscriptions.expire_date', $now);
-            })
-            ->orWhere(function($query) use ($now){
-                $query->where('memberships.monthly_charge','!=',0)
-                ->whereDate('monthly_charge_date', $now);
-            });
-        })->get(['id','email']);
-
-    // return auth()->user();
-
-
-
-
-
+    $productId = 581;
 
 });

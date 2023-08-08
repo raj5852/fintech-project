@@ -23,8 +23,8 @@ class ShopService
 
         $all_category = $category->sum('product_count');
 
-        $products = Product::where('status', 1)
-
+        $products = Product::where(['status'=> 1,'pre_order_status'=>0])
+            ->select('id','category_id','subcategory_id','product_name','product_slug','product_price','discount_price','thumbnail')
             ->when(request('sort') == 'product_popular', function ($q) {
                 return $q->withCount('orderItems')->orderBy('order_items_count', 'desc');
             })
@@ -65,7 +65,7 @@ class ShopService
         $brands = Brand::all();
         $members = Membership::all();
         $largeProductAmount = Product::orderBy('discount_price', 'desc')->first();
-
-        return compact('category', 'start_price', 'end_price', 'products', 'brands', 'category_id', 'subcategory_id', 'brand_id', 'members', 'all_category', 'largeProductAmount');
+        $userDetails = UserProfileService::userExists();
+        return compact('category', 'start_price', 'end_price', 'products', 'brands', 'category_id', 'subcategory_id', 'brand_id', 'members', 'all_category', 'largeProductAmount','userDetails');
     }
 }

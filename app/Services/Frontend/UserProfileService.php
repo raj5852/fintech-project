@@ -61,22 +61,23 @@ class UserProfileService
 
     static  function userExists()
     {
-        $user =  User::query()
+        if (auth()->check()) {
+            $user =  User::query()
 
-            ->with('memberships', function ($query) {
-                $query->where('is_life_time', 1)
-                    ->orWhere(function ($query) {
-                        $query->where('memberships.monthly_charge', 0)
-                            ->whereDate('subscriptions.expire_date', '>', now());
-                    })
-                    ->orWhere(function ($query) {
-                        $query->where('memberships.monthly_charge', '!=', 0)
-                            ->whereDate('monthly_charge_date', '>', now());
-                    });
-            })->find(auth()->user()->id);
+                ->with('memberships', function ($query) {
+                    $query->where('is_life_time', 1)
+                        ->orWhere(function ($query) {
+                            $query->where('memberships.monthly_charge', 0)
+                                ->whereDate('subscriptions.expire_date', '>', now());
+                        })
+                        ->orWhere(function ($query) {
+                            $query->where('memberships.monthly_charge', '!=', 0)
+                                ->whereDate('monthly_charge_date', '>', now());
+                        });
+                })->find(auth()->user()->id);
+            return $user;
+        }
 
-
-
-        return $user;
+        return null;
     }
 }

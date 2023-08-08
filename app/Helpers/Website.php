@@ -2,6 +2,7 @@
 
 use App\Models\Admin\ManageAPI;
 use App\Models\Admin\OrderDetails;
+use App\Models\Admin\Product;
 use App\Models\Admin\Social;
 use App\Models\User;
 use App\Models\User\WishList;
@@ -282,10 +283,10 @@ function isProductWishlist($product_id)
 {
 
     $isWishlist = "";
-
+    $authId =  Auth::id();
     if (Auth::check()) {
         $isWishlist = WishList::where('product_id', $product_id)
-            ->where('user_id', Auth::id())
+            ->where('user_id', $authId)
             ->exists();
     }
     return $isWishlist;
@@ -309,13 +310,49 @@ if (!function_exists('HumanReadableDate')) {
 
 
 if (!function_exists('authcheck')) {
-    function authcheck(){
+    function authcheck()
+    {
         return auth()->check() ? 1 : 0;
     }
 }
 
 if (!function_exists('usertype')) {
-    function usertype(){
+    function usertype()
+    {
         return auth()->user()->type;
+    }
+}
+
+if (!function_exists('user_product')) {
+    function user_product($productId)
+    {
+
+        if (auth()->check()) {
+            return  User::find(auth()->user()->id)
+                ->where(function ($query) use ($productId) {
+                    $query->where(function ($subQuery) use ($productId) {
+                        $subQuery->whereHas('orderDetails', function ($detailQuery) use ($productId) {
+                            $detailQuery->where('product_id', $productId)
+                                ->where('membership_id', 0);
+                        });
+                    })->orWhere(function ($subQuery) use ($productId) {
+                        $subQuery->whereHas('orderDetails', function ($detailQuery) use ($productId) {
+                            $detailQuery->where('product_id', $productId)
+                                ->where('membership_id', '!=', 0);
+                        })->whereHas('memberships', function ($query) {
+                            $query->where('is_life_time', 1)
+                                ->orWhere(function ($query) {
+                                    $query->where('memberships.monthly_charge', 0)
+                                        ->whereDate('subscriptions.expire_date', '>', now());
+                                })
+                                ->orWhere(function ($query) {
+                                    $query->where('memberships.monthly_charge', '!=', 0)
+                                        ->whereDate('monthly_charge_date', '>', now());
+                                });
+                        });
+                    });
+                })->exists();
+        }
+        return null;
     }
 }

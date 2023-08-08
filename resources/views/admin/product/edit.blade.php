@@ -41,6 +41,21 @@
                     <form class="g-3" method="POST" action="{{ route('update.product', $data->id) }}"
                         enctype="multipart/form-data">
                         @csrf
+
+                        @if ($data?->pre_order_status == 1)
+                            <div class="col-md-8">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" name="preorder"
+                                        {{ $data?->pre_order_status == 1 ? 'checked' : '' }} type="checkbox" id="preorder"
+                                        value="1">
+                                    <label class="form-check-label" for="preorder">Preorder (click to Preorder)</label>
+                                </div>
+                                <br><br><br>
+                            </div>
+                        @endif
+
+
+
                         <div class="row">
                             <div class="col-md-8">
                                 <label for="productName" class="form-label">Product Name</label>
@@ -284,10 +299,10 @@
                                         <tr>
                                             <td><input type="text" name="product_url[]" placeholder="Product URL"
                                                     class="form-control name_list" value="{{ $link }}"
-                                                    required /></td>
+                                                     /></td>
                                             <td><input type="text" name="product_version[]"
                                                     placeholder="Product Version" value="{{ $version }}"
-                                                    class="form-control name_list" required /></td>
+                                                    class="form-control name_list"  /></td>
                                             <td>
 
                                                 @if ($loop->first)
@@ -321,6 +336,15 @@
                             <textarea class="form-control" id="summernote2" name="description" placeholder="Address 2..." rows="3">{{ $data->description }}</textarea>
                         </div>
                         <br>
+
+                        <div class="col-md-6" id="minimum_orders">
+                            <label for="minimum_orders" class="form-label">Minimum orders <sup
+                                    class="text-danger">*</sup></label>
+                            <input type="number" class="form-control" placeholder="Enter Minimum orders(10)"
+                                name="minimum_orders" value="{{ $data->minimum_orders }}">
+                        </div>
+                        <br>
+
                         <div class="col-12">
                             <button type="submit" class="btn btn-primary px-5">Update</button>
                         </div>
@@ -410,26 +434,51 @@
                 $(this).parents(".col-md-2").remove();
             });
 
-                       // slug code
+            // slug code
 
-                       $(document).ready(function() {
-      $('#productName').on('input', function() {
-        var productName = $(this).val();
-        var productSlug = slugify(productName);
-        $('#productSlug').val(productSlug);
-      });
-    });
+            $(document).ready(function() {
+                $('#productName').on('input', function() {
+                    var productName = $(this).val();
+                    var productSlug = slugify(productName);
+                    $('#productSlug').val(productSlug);
+                });
+            });
 
-    function slugify(text) {
-      return text.toString().toLowerCase()
-        .replace(/\s+/g, '-')         // Replace spaces with -
-        .replace(/[^\w\-]+/g, '')     // Remove all non-word chars
-        .replace(/\-\-+/g, '-')       // Replace multiple - with single -
-        .replace(/^-+/, '')           // Trim - from start of text
-        .replace(/-+$/, '');          // Trim - from end of text
-    }
+            function slugify(text) {
+                return text.toString().toLowerCase()
+                    .replace(/\s+/g, '-') // Replace spaces with -
+                    .replace(/[^\w\-]+/g, '') // Remove all non-word chars
+                    .replace(/\-\-+/g, '-') // Replace multiple - with single -
+                    .replace(/^-+/, '') // Trim - from start of text
+                    .replace(/-+$/, ''); // Trim - from end of text
+            }
+            $(document).ready(function() {
+                // Initial state
+                @if ($data->pre_order_status == 1)
+                    $("#minimum_orders").show();
+                @else
+                    $("#minimum_orders").hide();
+                @endif
 
 
+
+                // When checkbox is clicked
+                $("#preorder").on("click", function() {
+                    if ($(this).is(":checked")) {
+
+                        $("#minimum_orders").show();
+
+
+                    } else {
+
+
+                        $("#minimum_orders").hide();
+
+
+
+                    }
+                });
+            });
         </script>
     @endpush
 @endsection
