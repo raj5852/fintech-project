@@ -62,7 +62,7 @@ class UserProfileService
     static  function userExists()
     {
         if (auth()->check()) {
-            $user =  User::query()
+            $user = User::query()
 
                 ->with('memberships', function ($query) {
                     $query->where('is_life_time', 1)

@@ -91,21 +91,6 @@
                     })
                 </script>
 
-
-                {{-- <input type="hidden" name="price" readonly value="{{ number_format($data['price'] , 2) }}"> --}}
-                <input type="hidden" name="price" readonly value="{{ $data['price'] , 2 }}">
-                <input type="hidden" name="qty" readonly value="{{ $data['qty'] }}">
-                <input type="hidden" name="order_no" readonly value="{{ date('ymdhis') }}">
-                @foreach($data['url'] as $key=> $product)
-
-                <input type="hidden" name="product_url[]" value="{{ $product }}">
-                <input type="hidden" name="product_name[]" value="{{ $data['product_name'][$key] }}">
-                <input type="hidden" name="product_qty[]" value="{{ $data['product_qty'][$key] }}">
-                <input type="hidden" name="unit_price[]" value="{{ $data['unit_price'][$key] }}">
-                <input type="hidden" name="product_id[]" value="{{ $data['product_id'][$key]}}">
-                @endforeach
-
-
                 <div class="contact__form-right">
                     <div class="cart__area-right add-shadow">
                         <div class="cart__area-innerright">
@@ -115,7 +100,7 @@
 
                             <span class="__tx">
 
-                                ${{ decrypt($data['price'] , 2) }}
+                                ${{$totalProductAmount }}
                             </span>
 
 
@@ -124,18 +109,10 @@
                         <div class="checkout_total">
                             <span class="__tx">total</span>
 
-                            <span class="__tx">${{ decrypt($data['price'] , 2) }}</span>
+                            <span class="__tx">$ {{$totalProductAmount}} </span>
                         </div>
-                        <!-- <p class="payment-select-title">Select your payment method</p> -->
                         </div>
-                        <!-- <div class="payment-logos">
-                            <label class="img-btn" for="payment-input" style=" border:none">
-                            	<span class="payment-select" data-id="2" style=" cursor: pointer; display:flex; width: 100%; justify-content: center; align-items: center; height: 100%; border-radius: 10px;"><img src="{{ asset('frontend/') }}/img/paypal1.png" alt="Payal"></span>
-                            </label>
-                            <input type="radio" id="payment-input" name="method" value="2" >
-                            <div class="selected-bg"></div>
-                        </div> -->
-                         
+
 
                         <div>
                             <div class="items-dp">
@@ -155,8 +132,8 @@
                                         class="dropdown-menu"
                                         id="db-filter-items-A1-Admin-das"
                                     >
-                                    
-                                        <li class="list-pay-drop">                                             
+
+                                        <li class="list-pay-drop">
                                             <span class="dropdown-item ab-x">Select your payment method</span>
                                         </li>
                                         <li class="list-pay-drop">
@@ -218,8 +195,8 @@
                                          </li>
 
 
-                                        
-                                         
+
+
                                     </ul>
                                 </div>
                             </div>

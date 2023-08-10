@@ -66,7 +66,9 @@ use App\Http\Controllers\NowPaymentRedirectController;
 use App\Http\Controllers\User\NotificationController as UserNotificationController;
 use App\Http\Controllers\User\PreOrderController;
 use App\Http\Controllers\User\ResetController;
+use App\Mail\ProductEmail;
 use App\Models\Admin\Membership;
+use App\Models\Admin\Order;
 use App\Models\Admin\OrderDetails;
 use App\Models\Admin\Product;
 use App\Models\NowPaymentOrder;
@@ -74,14 +76,13 @@ use App\Models\User;
 use App\Models\User\Subscription;
 use App\Notifications\ProductUpdateNotification;
 use App\Services\Frontend\UserProfileService;
+use App\Services\User\UserActiveMembership;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
-
-
-
+use Illuminate\Support\Facades\Mail;
 
 Auth::routes();
 
@@ -586,6 +587,59 @@ Route::get('migrate', function () {
 });
 
 Route::get('demo', function () {
-    $productId = 581;
+
+    $now_pay_order =  NowPaymentOrder::where([
+        'order_no' => '64d5161b400fb',
+        'is_binance_payment' => null,
+        'payment_method' => 'Binance'
+    ])->first();
+
+    if ($now_pay_order->type == 'purchase') {
+
+        $user = User::find($now_pay_order->user_id);
+
+        $orderData = $order = new Order();
+        $order->name = $user->name;
+        $order->email = $user->email;
+        $order->user_id = $user->id;
+        $order->order_no = $now_pay_order->order_no;
+        $order->total_qty = $now_pay_order->total_qty;
+        $order->total_price = $now_pay_order->total_price;
+        $order->coupon_amount = $now_pay_order->coupon_amount;
+        $order->payment_method = 'Binance';
+        $order->coupon = $now_pay_order->coupon;
+        $order->email_colleted = 0;
+        $order->subscribe_id = $now_pay_order->subscribe_id;
+        $order->save();
+
+
+
+        $productGET =  Product::find(json_decode($now_pay_order->product_id));
+
+        $emailContent = [
+            "email_subject" => 'Product link',
+            "product_url" => json_decode($now_pay_order->product_url),
+            "product_name" => $productGET->pluck('product_name')
+        ];
+
+        Mail::to($user->email)->send(new ProductEmail($emailContent));
+
+        foreach ($productGET as $key => $value) {
+            $orderDetails = new OrderDetails();
+            $orderDetails->order_id = $orderData->id;
+            $orderDetails->product_name = $value->product_name;
+            $orderDetails->product_id = json_decode($now_pay_order->product_id)[$key];
+            $orderDetails->product_qty = 1;
+            $orderDetails->unit_price = $value->discount_price; //pb
+            $orderDetails->product_price = $value->discount_price;
+            $orderDetails->membership_id = 0; // 0 = no membership
+
+            $orderDetails->save();
+        }
+
+        $now_pay_order->update([
+            'is_binance_payment' => 1
+        ]);
+    }
 
 });

@@ -150,7 +150,7 @@
 
                                                     <p><a class="notify-txt" style="{{ $notification->read_at == null ? 'font-weight: bold':'color:#b4b4b4' }} " href="{{ route('notification.product-link',$notification->id) }}">{{ $notification->data['product_name'] }}</a>   </p>
 
-                                                    <p class="notify-time">{{ $notification->read_at->diffForHumans() }} </p>
+                                                    <p class="notify-time">{{ $notification->created_at->diffForHumans() }} </p>
                                                 </div>
                                             @endforeach
 

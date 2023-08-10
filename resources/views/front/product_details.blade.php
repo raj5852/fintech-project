@@ -97,9 +97,6 @@
                 <div class="col-xl-6 col-lg-6 col-md-12">
                     <div class="single__product-left">
 
-
-
-
                         <div class="slider-main-pro">
                             <p class="cashback-p">Cashback</p>
                             <div class="img-view slider-for">
@@ -147,8 +144,7 @@
 
                         @foreach ($product->orderItems->where('rstatus', 1) as $orderItem)
                             @php
-                                // print_r($orderItem);
-                                // return false;
+
                                 if ($orderItem->review) {
                                     $avgrating = $avgrating + $orderItem->review->rating;
                                 }
@@ -175,50 +171,52 @@
                         </div>
                         <div class="single__product-feature">
                             <p>{{ $product->product_short_desc }}</p>
-                            {{-- <ul class="single__product-featurlist">
-								@foreach ($specifiactions as $key => $specific)
-								<li>{{ $specific }} : {{ json_decode($product->specification_ans, true)[$key] }}.</li>
-								@endforeach
-							</ul> --}}
+
                         </div>
 
                         <div class="d-flex add-to-cart-by-now-ab">
-                            <form action="{{ route('add.cart') }}" method="post" class="addCard">
-
-                                @csrf
-                                <div class="viewcontent__action single_action pt-30">
-                                    {{-- <p class="single__product-increment single__product-cart   product_inc_style"><span class="will_hov"><i style="cursor: pointer;" class="bi bi-plus"></i></span><span class="qty">1</span><span class="will_hov"><i style="cursor: pointer;" class="bi bi-dash  "></i></span></p> --}}
-                                    {{-- <input type="hidden" name="product_qty" class="product_qty" value="1" min="1" > --}}
-                                    <button class="add-to-cart common-btn" style="margin-left: 0px; " type="submit">ADD
-                                        TO CART</button>
-                                    <input type="hidden" name="product_id" value="{{ encrypt($product->id) }}">
-                                    @if ($product->discount_rate == 0.0)
-                                        <input type="hidden" name="product_price"
-                                            value="{{ encrypt($product->product_price) }}">
-                                    @else
-                                        <input type="hidden" name="product_price"
-                                            value="{{ encrypt($product->discount_price) }}">
-                                    @endif
-                                </div>
-                            </form>
-                            <button class="add-to-wish addWishlist common-btn" data-id="{{ $product->id }}"><i
-                                    class="bi bi-heart"></i></button>
-
-                            <form action="{{ route('add.buy') }}" method="post">
-                                @csrf
-                                <input type="hidden" name="product_id" value="{{ encrypt($product->id) }}">
-                                <input type="hidden" name="product_qty" value="1">
-                                @if ($product->discount_rate == 0.0)
-                                    <input type="hidden" name="product_price"
-                                        value="{{ encrypt($product->product_price) }}">
-                                @else
-                                    <input type="hidden" name="product_price"
-                                        value="{{ encrypt($product->discount_price) }}">
-                                @endif
 
 
-                                <button class="add-to-buy common-btn  " href="#">BUY NOW</button>
-                            </form>
+
+                            @if (user_product($product->id) == 1)
+                                @php
+                                    $productlinks = $product->product_url;
+
+                                    $keyLink = array_keys($productlinks);
+
+                                    $downloadUrl = end($keyLink);
+                                @endphp
+
+                                <a class="add-to-cart common-btn" style="margin-left: 0px; " href="{{ $downloadUrl }}"
+                                    type="submit">Download
+                                    Now</a>
+                            @elseif (isProductPurchased($product->id) == 1)
+                                <a class="add-to-cart common-btn" href="{{ route('user.my-orders') }}"
+                                    style="margin-left: 0px; " type="submit">Download
+                                    Now</a>
+                            @else
+                                <form action="{{ route('add.cart') }}" method="post" class="addCard">
+                                    @csrf
+                                    <div class="viewcontent__action single_action pt-30">
+
+                                        <button class="add-to-cart common-btn" style="margin-left: 0px; " type="submit">ADD
+                                            TO CART</button>
+                                        <input type="hidden" name="product_slug" value="{{ $product->product_slug }}">
+                                    </div>
+                                </form>
+                                <button class="add-to-wish addWishlist common-btn" data-id="{{ $product->id }}"><i
+                                        class="bi bi-heart"></i></button>
+
+
+                                <form action="{{ route('add.buy') }}" method="post">
+                                    @csrf
+                                    <input type="hidden" name="product_slug" value="{{ $product->product_slug }}">
+                                    <button class="add-to-buy common-btn" href="#">BUY NOW</button>
+                                </form>
+                            @endif
+
+
+
                         </div>
 
 
@@ -564,8 +562,7 @@
 
 
                     var productId = {{ $product->id }};
-                    // var authcheck = {{ authcheck() }};
-                    // var userId = {{ $userId }};
+
 
 
                     $.ajax({
@@ -633,7 +630,7 @@
                                 `;
                                 });
 
-                                $('#comments').html(commentsHtml);
+                            $('#comments').html(commentsHtml);
                         },
 
                         error: function(error) {

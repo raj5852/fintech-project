@@ -68,7 +68,8 @@ class PaymentService
         return redirect($result['data']['checkoutUrl']);
     }
 
-   static function nowpayments($uniqid,$price,$serviceName){
+
+   static function nowpayments($orderid,$price,$serviceName){
 
         $response = Http::withHeaders([
             'x-api-key' => nowpayment_api_key(),
@@ -76,7 +77,7 @@ class PaymentService
         ])->post('https://api.nowpayments.io/v1/invoice', [
             'price_amount' => $price,
             'price_currency' => 'usd',
-            'order_id' => $uniqid,
+            'order_id' => $orderid,
             'order_description' => $serviceName,
             'ipn_callback_url' => nowpayment_callback_url(),
             'success_url' => url('user/nowpayment-product-success'),

@@ -66,13 +66,7 @@
 								<td>
 
 									<button class="btn btn-sm btn-info edit" data-bs-toggle="modal" data-bs-target="#editModel" data-id="{{ $row->id }}" >Edit</button>
-									{{-- @if($key > 4) --}}
-									{{-- <form action="{{ route('delete.coupon',$row->id) }}" style="display: inline-block;" method="POST" id="delete_form">
-									    @csrf
-									    @method('DELETE')
-									    <button class="btn btn-sm btn-danger" id="delete" type="submit">Delete</button>
-									</form> --}}
-									{{-- @endif --}}
+
                                     <a href="{{ route('delete.coupon',$row->id) }}" class="btn btn-danger" id="delete" >Delete</a>
 								</td>
 							</tr>

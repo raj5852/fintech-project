@@ -118,11 +118,8 @@ class FrontController extends Controller
             ->telegram()
             ->whatsapp();
 
-        $userType = auth()->check() ? auth()->user()->type : 0;
-        $userId = auth()->check() ? auth()->user()->id : 0;
 
-
-        return view('front.product_details', compact('product', 'latest_product', 'shareComponent', 'fixeds','userType','userId'));
+        return view('front.product_details', compact('product', 'latest_product', 'shareComponent', 'fixeds'));
     }
 
     /**

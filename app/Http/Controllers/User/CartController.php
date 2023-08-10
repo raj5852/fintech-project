@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CartRequest;
+use App\Http\Requests\CouponRequest;
 use Illuminate\Http\Request;
 use App\Models\Admin\Product;
 use App\Models\Admin\Coupon;
@@ -10,12 +12,15 @@ use App\Models\Admin\Membership;
 use App\Models\Admin\Order;
 use App\Models\User;
 use App\Models\User\Subscription;
+use App\Services\Frontend\UserProfileService;
+use App\Services\User\CartService;
 use Cart;
 use Session;
 use Auth;
 use DB;
 use Gloudemans\Shoppingcart\Facades\Cart as FacadesCart;
 use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Support\Facades\Log;
 
 class CartController extends Controller
 {
@@ -26,29 +31,10 @@ class CartController extends Controller
      */
     public function index()
     {
-        $data =  FacadesCart::content();
-        $productIds =  $data->pluck('id');
 
-        if (auth()->user()) {
-            if (user_month_expires() == 0) {
-                $membershipId = User::find(auth()->user()->id)->subscribe_id;
-                $productPrice = Product::whereIn('id', $productIds)
-                    ->whereHas('memberships', function ($query) use ($membershipId) {
-                        $query->where('memberships.id', $membershipId);
-                    })
-                    ->with('memberships')
-                    ->sum('discount_price');
-            } else {
-                $productPrice = 0;
-            }
-        } else {
-            $productPrice = 0;
-        }
+        $productPrice = CartService::cart();
 
-
-
-
-        return view('front.cart.index', compact('data', 'productPrice'));
+        return view('front.cart.index', $productPrice);
     }
 
     /**
@@ -67,22 +53,12 @@ class CartController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CartRequest $request)
     {
 
-        try {
-            $productId = decrypt($request->product_id);
-        } catch (DecryptException $e) {
-            return response()->json('decryption wrong');
-        }
+        $validate = $request->validated();
 
-        $product = Product::find($productId);
-
-        try {
-            $productPrice = decrypt($request->product_price);
-        } catch (DecryptException $e) {
-            return response()->json('decryption wrong');
-        }
+        $product = Product::where('product_slug', $validate['product_slug'])->first();
 
         $productIdSearch = $product->id;
         $item = FacadesCart::search(function ($cartItem, $rowId) use ($productIdSearch) {
@@ -94,14 +70,15 @@ class CartController extends Controller
             return response()->json($message);
         }
 
+        $discountPrice =  $product->discount_price;
 
         Cart::add([
             'id' => $product->id,
             'name' => $product->product_name,
             'qty' => 1,
-            'price' => $productPrice,
+            'price' => $discountPrice,
             'weight' => 1,
-            'options' => ['title' => $product->product_title, 'image' => $product->thumbnail, 'url' => $product->product_url,]
+            'options' => ['title' => $product->product_title, 'image' => $product->thumbnail, 'url' => $product->product_url]
 
         ]);
         session()->forget('coupon');
@@ -180,141 +157,66 @@ class CartController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function applyCoupon(Request $request)
+    public function applyCoupon(CouponRequest $request)
     {
-        $userId = Auth::id();
-        $coupon = $request->coupon;
-        $coupon_count = Order::where('coupon', $coupon)->where('user_id', $userId)->count();
-        $check = Coupon::where('coupon_name', $coupon)->first();
+
+        $validatedData = $request->validated();
 
 
-        $subscribe_coupon = Subscription::where('user_id', $userId)->first();
+        $invalid = array(
+            'messege' => 'Invalid Coupon !',
+            'alert-type' => 'warning'
+        );
 
-        if ($check && $check->membership_id == 0) {
-            if ($check) {
-                $amount = $check->use_amount <= Cart::Subtotal();
-                $coupon_use = $check->coupon_use > $coupon_count;
-            }
-            if ($check && $amount && $coupon_use) {
+        $couponCount = Order::where('coupon', $validatedData['coupon'])->count();
+        $exists = Coupon::where('coupon_name', $validatedData['coupon'])->exists();
+
+        $coupon = Coupon::where('coupon_name', $validatedData['coupon'])->first();
 
 
-                if ($check->coupon_type == 'Flat') {
-                    session()->forget('coupon');
-
-                    Session::put('coupon', [
-                        'code' => $check->coupon_name,
-                        'discount' => $check->coupon_rate,
-                        'balance' => Cart::Subtotal() - $check->coupon_rate,
-                        'coupon_type' => 1,
-                        'coupon_rate' => $check->coupon_rate,
-                    ]);
-                } else {
-                    session()->forget('coupon');
-                    //calculate % coupon rate
-                    $coupon = $check->coupon_rate;
-                    $discount = Cart::Subtotal() * $coupon / 100;
-                    Session::put('coupon', [
-                        'code' => $check->coupon_name,
-                        'discount' => $discount,
-                        'balance' => Cart::Subtotal() - $discount,
-                        'coupon_type' => 0,
-                        'coupon_rate' => $check->coupon_rate,
-                    ]);
-                }
-                $notification = array(
-                    'messege' => 'Suucessfully Coupon Applied !',
-                    'alert-type' => 'success'
-                );
-                return Redirect()->back()->with($notification);
-            } else {
-                $notification = array(
-                    'messege' => 'Your Coupon Code is Invalid !',
-                    'alert-type' => 'error'
-                );
-                return Redirect()->back()->with($notification);
-            }
-        } elseif ($check && $check->membership_id == Auth::user()->subscrbe_id && date('Y-m-d') <= $subscribe_coupon->monthly_charge_date && date('Y-m-d') <= $subscribe_coupon->expire_date) {
-
-            if ($check->coupon_type == 1) {
-                Session::put('coupon', [
-                    'code' => $check->coupon_name,
-                    'discount' => $check->coupon_rate,
-                    'balance' => Cart::Subtotal() - $check->coupon_rate,
-                    'coupon_type' => 1,
-                    'coupon_rate' => $check->coupon_rate,
-                ]);
-            } else {
-                //calculate % coupon rate
-                $coupon = $check->coupon_rate;
-                $discount = Cart::Subtotal() * $coupon / 100;
-                Session::put('coupon', [
-                    'code' => $check->coupon_name,
-                    'discount' => $discount,
-                    'balance' => Cart::Subtotal() - $discount,
-                    'coupon_type' => 0,
-                    'coupon_rate' => $check->coupon_rate,
-                ]);
-            }
-            $notification = array(
-                'messege' => 'Suucessfully Coupon Applied !',
-                'alert-type' => 'success'
-            );
-            return Redirect()->back()->with($notification);
-        } elseif ($check && $check->membership_id == Auth::user()->subscrbe_id &&  $subscribe_coupon->monthly_charge_date == "" && $subscribe_coupon->expire_date == "lifetime") {
-
-            if ($check->coupon_type == 1) {
-                Session::put('coupon', [
-                    'code' => $check->coupon_name,
-                    'discount' => $check->coupon_rate,
-                    'balance' => Cart::Subtotal() - $check->coupon_rate,
-                    'coupon_type' => 1,
-                    'coupon_rate' => $check->coupon_rate,
-                ]);
-            } else {
-                //calculate % coupon rate
-                $coupon = $check->coupon_rate;
-                $discount = Cart::Subtotal() * $coupon / 100;
-                Session::put('coupon', [
-                    'code' => $check->coupon_name,
-                    'discount' => $discount,
-                    'balance' => Cart::Subtotal() - $discount,
-                    'coupon_type' => 0,
-                    'coupon_rate' => $check->coupon_rate,
-                ]);
-            }
-            $notification = array(
-                'messege' => 'Suucessfully Coupon Applied !',
-                'alert-type' => 'success'
-            );
-            return Redirect()->back()->with($notification);
-        } else {
-            $notification = array(
-                'messege' => 'Your Coupon Code is Invalid !',
-                'alert-type' => 'error'
-            );
-            return Redirect()->back()->with($notification);
+        if (!$exists) {
+            return back()->with($invalid);
         }
+
+        if ($coupon->coupon_use <= $couponCount) {
+            return back()->with($invalid);
+        }
+
+        if (session()->get('coupon')) {
+            $couponUsed = array(
+                'messege' => 'Coupon already used !',
+                'alert-type' => 'warning'
+            );
+            return back()->with($couponUsed);
+        }
+
+        $totalAmount =  CartService::totalAmount();
+
+        if ($coupon->use_amount >  $totalAmount) {
+            return back()->with($invalid);
+        }
+
+
+        session()->put('coupon', [
+            'code' => $coupon->coupon_name,
+            'discount' => $coupon->coupon_rate,
+            'type' => $coupon->coupon_type,
+            'balance' => ($coupon->coupon_type == 'Percent' ? ($totalAmount / 100) * $coupon->coupon_rate :  $coupon->coupon_rate),
+        ]);
+
+        $success = array(
+            'messege' => 'Coupon used successfully!',
+            'alert-type' => 'success'
+        );
+        return back()->with($success);
     }
 
-    public function Buystore(Request $request)
+    public function Buystore(CartRequest $request)
     {
-
-        try {
-            $productId = decrypt($request->product_id);
-        } catch (DecryptException $e) {
-            return response()->json('decryption wrong');
-        }
-
-        $product = Product::find($productId);
-
-        try {
-            $productPrice = decrypt($request->product_price);
-        } catch (DecryptException $e) {
-            return response()->json('decryption wrong');
-        }
+        $validateData = $request->validated();
 
 
-
+        $product = Product::where('product_slug',$validateData['product_slug'])->first();
 
         $productIdSearch = $product->id;
         $item = FacadesCart::search(function ($cartItem, $rowId) use ($productIdSearch) {
@@ -336,7 +238,7 @@ class CartController extends Controller
             'id' => $product->id,
             'name' => $product->product_name,
             'qty' => 1,
-            'price' => $productPrice,
+            'price' => $product->discount_price,
             'weight' => 1,
             'options' => ['title' => $product->product_title, 'image' => $product->thumbnail, 'url' => $product->product_url,]
 
