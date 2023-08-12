@@ -421,7 +421,9 @@
 
                         <!-- new  pagination  -->
                         <div class="pagination-wrap-ab mb-5">
-                            {{ $products->links() }}
+                            {{-- {{ $products->links() }} --}}
+                            {{ $products->links('vendor.pagination.default') }}
+
                         </div>
                     </div>
                 </div>

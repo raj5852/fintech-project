@@ -11,13 +11,20 @@ class PreOrderController extends Controller
     //
     function payment($slug)
     {
-        $products = Product::where([
+        $product = Product::where([
             'product_slug' => $slug,
             'status' => 1,
             'pre_order_status' => 1
         ])->firstOrFail();
 
-        return view('user.preorder-payment');
-
+        $totalProductAmount = $product->discount_price;
+        $preorder = 1;
+        $productSlug = $product->product_slug;
+        return view('user.checkout', compact('totalProductAmount','preorder','productSlug'));
     }
+
+    function store(){
+        return request()->all();
+    }
+
 }

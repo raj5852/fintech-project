@@ -43,7 +43,7 @@
                                             <input type="hidden" value="{{ $membership->monthly_charge }}"
                                                 id="monthly_charge">
                                             <input type="hidden" name="membership_id"
-                                                value="{{ encrypt($membership->id) }}">
+                                                value="{{ ($membership->id) }}">
                                             <input type="hidden" name="is_lifetime"
                                                 value="{{ $data['is_lifetime'] ?? 0 }}">
                                         </div>

@@ -28,8 +28,6 @@
                     <div class="single__product-left">
 
 
-
-
                         <div class="slider-main-pro">
                             <!-- <p class="cashback-p">Cashback</p> -->
                             <div class="img-view slider-for">
@@ -97,17 +95,24 @@
                             @if ($requirementFulfil != true)
                                 <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="0"
                                     aria-valuemin="0" aria-valuemax="100">
-                                    <div class="progress-bar" style="width: {{ ($products->minimum_orders / 100) * $products->orders_count }}%"></div>
+                                    <div class="progress-bar"
+                                        style="width: {{ ($products->orders_count / $products->minimum_orders) * 100 }}%">
+                                    </div>
                                 </div>
-                                @else
+                            @else
                                 <p class="deliver-txt">Delivery On The Way</p>
                             @endif
 
                         </div>
 
                         <div class="d-flex add-to-cart-by-now-ab pre-details">
-                            <button class="add-to-cart common-btn" style="margin-left: 0px; border-radius:10px"
-                                type="submit">Pre-Order</button>
+                            @if (isProductPurchased($products->id) == false)
+                                <button class="add-to-cart common-btn" style="margin-left: 0px; border-radius:10px"
+                                    type="submit">Pre-Order</button>
+                            @else
+                            <p class="deliver-txt">Delivery On The Way</p>
+                            @endif
+
                         </div>
 
 

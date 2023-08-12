@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Http;
  */
 class EpaymentService
 {
-    static function product($totalProductAmount,$method = 'Nowpayments')
+    static function product($totalProductAmount, $method = 'Nowpayments')
     {
         $carCount =  Cart::count();
         $totalPrice = $totalProductAmount;
@@ -54,12 +54,25 @@ class EpaymentService
             'product_url' => json_encode($urls),
             'product_id' => json_encode($allproductsids),
             'subscribe_id' => $user->subscribe_id == 0 ? 'General  Member' : $user->member->membership_name,
-            'product_quantity'=>json_encode(1)
+            'product_quantity' => json_encode(1)
         ]);
 
 
         return $nowPaymentOrder;
+    }
 
+    static function membership($membershipdId, $is_lifetime, $totalMonth, $amount)
+    {
+        $user = auth()->user();
 
+        $nowPaymentOrder = NowPaymentOrder::create([
+            'user_id' => $user->id,
+            'order_no' => uniqid(),
+            'subscribe_id' => $membershipdId,
+            'is_lifetime'   => $is_lifetime,
+            'total_month' => $totalMonth,
+            'total_price' => $amount,
+        ]);
+        return  $nowPaymentOrder;
     }
 }

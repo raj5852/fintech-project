@@ -286,10 +286,15 @@
                     </div>
                 </div>
             </div>
+            @if ($preorder == 1)
+                <input type="hidden" name="is_preorder" value="1">
+                <input type="hidden" name="product_slug" value="{{ $productSlug }}">
+            @endif
             <div class="order-place-sub-btn">
             <button class="common-btn " type="submit"><span class="px-4">Order Place</span></button>
             </div>
         </div>
+
     </form>
     </div>
 </div>

@@ -24,7 +24,7 @@ class CheckoutService
         $order->order_no = uniqid();
         $order->total_qty = $carCount;
         $order->total_price = $totalPrice;
-        $order->coupon_amount = $coupon_amount;
+        $order->coupon_amount = $coupon_amount ;
         $order->payment_method = $wallet;
         $order->coupon = $coupon;
         $order->save();

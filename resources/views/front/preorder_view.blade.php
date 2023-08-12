@@ -50,8 +50,7 @@
             <div class="shop-page-tab-result active">
                 <div class="cards-wrap-ab  pre-ord-cars">
                     @foreach ($preorders as $preorder)
-                    <x-preorder :preorder="$preorder" />
-
+                        <x-preorder :preorder="$preorder" />
                     @endforeach
                 </div>
             </div>
@@ -63,53 +62,12 @@
             <div class="shop-page-tab-result">
                 <div class="cards-wrap-style-3  ">
                     <!-- item  -->
-                    <div class="item">
-                        <h1 class="__title">Product <span class="d-txt">(Delivery On The Way)</span> </h1>
-                        <p class="__price">$78.59</p>
-                        <div class="action">
-                            <button class="common-btn">Pre-Order</button>
-                        </div>
-                    </div>
+                    @foreach ($preorders as $preorder)
+                        <x-preorder-large :preorder="$preorder" />
+                    @endforeach
+
                     <!-- item  -->
-                    <div class="item">
-                        <h1 class="__title">Product </h1>
-                        <p class="__price">$78.59</p>
-                        <div class="action">
-                            <button class="common-btn">Pre-Order</button>
-                        </div>
-                    </div>
-                    <!-- item  -->
-                    <div class="item">
-                        <h1 class="__title">Product </h1>
-                        <p class="__price">$78.59</p>
-                        <div class="action">
-                            <button class="common-btn">Pre-Order</button>
-                        </div>
-                    </div>
-                    <!-- item  -->
-                    <div class="item">
-                        <h1 class="__title">Product </h1>
-                        <p class="__price">$78.59</p>
-                        <div class="action">
-                            <button class="common-btn">Pre-Order</button>
-                        </div>
-                    </div>
-                    <!-- item  -->
-                    <div class="item">
-                        <h1 class="__title">Product </h1>
-                        <p class="__price">$78.59</p>
-                        <div class="action">
-                            <button class="common-btn">Pre-Order</button>
-                        </div>
-                    </div>
-                    <!-- item  -->
-                    <div class="item">
-                        <h1 class="__title">Product </h1>
-                        <p class="__price">$78.59</p>
-                        <div class="action">
-                            <button class="common-btn">Pre-Order</button>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
