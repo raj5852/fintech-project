@@ -22,7 +22,11 @@ use App\Models\HomePage;
 use App\Models\Admin\AboutTwo;
 use App\Models\Admin\AboutOne;
 use App\Models\Admin\Medicine;
+use App\Models\Discussion;
+use App\Models\DiscussionUser;
 use App\Models\FixedSpecification;
+use App\Models\PrivateComment;
+use App\Models\PrivatePost;
 use App\Services\Frontend\ShopService;
 use App\Services\Frontend\UserProfileService;
 use App\Services\User\PreorderService;
@@ -101,7 +105,7 @@ class FrontController extends Controller
             'product_slug' => $product_slug,
             'status' => 1,
         ])
-        ->firstOrFail();
+            ->firstOrFail();
 
 
 
@@ -319,7 +323,6 @@ class FrontController extends Controller
             if ($request->hasFile('imageone')) {
                 $image_tmp = $request->file('imageone');
                 if ($image_tmp->isValid()) {
-                    // Get image extension
                     $extension = $image_tmp->getClientOriginalExtension();
                     $imageName = rand(111, 999) . '.' . $extension;
                     $imagePath = 'backend/images/bookproduct/' . $imageName;
@@ -364,20 +367,51 @@ class FrontController extends Controller
         }
     }
 
-    public function discussion()
+    public function discussion($slug)
     {
-        return view('front.discussion');
+        $user = auth()->user();
+        $discussion =  Discussion::where('slug', $slug)->exists();
+        $userDiscussuin = DiscussionUser::where('user_id', $user->id)->exists();
+
+        if (($discussion && $userDiscussuin) || $user->type == 'admin') {
+
+            $discussionid =  Discussion::where('slug', $slug)->first()->id;
+            $privatePosts = PrivatePost::where('discussion_id', $discussionid)->withCount('privatecomments')->with('user:id,name,image,type')->latest()->paginate(5);
+
+            return view('front.discussion', compact('user', 'discussionid', 'privatePosts'));
+        } else {
+            return to_route('user.home');
+        }
     }
 
-    public function discussionDetails()
+    public function discussionDetails(PrivatePost $PrivatePost)
     {
-        return view('front.discussionDetails');
+        $discussion_id =  $PrivatePost->discussion_id;
+        $user = auth()->user();
+
+        $privatepost =  $PrivatePost->load('user:id,name,image,type');
+
+        $discussion =   DiscussionUser::where([
+            'user_id' => $user->id,
+            'discussion_id' => $discussion_id
+        ])->exists();
+
+        if ($discussion == 1 || $user->type == 'admin') {
+
+            $privateComments  = PrivateComment::where('private_post_id', $PrivatePost->id)->with('user:id,name,image,type')->latest()->get();
+            $commentCount = PrivateComment::where('private_post_id', $PrivatePost->id)->count();
+
+            return view('front.discussionDetails', compact('privatepost','privateComments','commentCount'));
+        }
+        abort(!$discussion, 403);
+        // DiscussionUser::where('user_id', $user->id)->exists();
+
     }
     public function renew_membership(UserProfileService $uerProfileService)
     {
         $userDetails = $uerProfileService->userWithMembership();
 
-        if ($userDetails->memberships_exists != true && $userDetails ?->memberships[0]?->pivot?->is_life_time != 0) {
+        if ($userDetails->memberships_exists != true && $userDetails?->memberships[0]?->pivot?->is_life_time != 0) {
             return redirect('/user/home')->with('error', 'You have no access');
         }
 
@@ -388,7 +422,7 @@ class FrontController extends Controller
     public function preorder_view()
     {
         $preorders =    PreorderService::index();
-        return view('front.preorder_view',compact('preorders'));
+        return view('front.preorder_view', compact('preorders'));
     }
     public function license()
     {
@@ -399,11 +433,11 @@ class FrontController extends Controller
         $products = Product::where([
             'product_slug' => $slug,
             'status' => 1,
-            'pre_order_status'=> 1
+            'pre_order_status' => 1
         ])
-        ->with('category')
-        ->select('category_id', 'id', 'product_name',  'product_price','discount_price', 'pre_order_status', 'minimum_orders', 'thumbnail','images')
-        ->withCount('orders')->firstOrFail();
+            ->with('category')
+            ->select('category_id', 'id', 'product_name',  'product_price', 'discount_price', 'pre_order_status', 'minimum_orders', 'thumbnail', 'images')
+            ->withCount('orders')->firstOrFail();
 
 
         $latest_product = Product::latest()
@@ -419,5 +453,10 @@ class FrontController extends Controller
             ->whatsapp();
 
         return view('front.preorder_details', compact('products', 'latest_product', 'shareComponent', 'fixeds'));
+    }
+
+    function privatecomments($postid)
+    {
+
     }
 }

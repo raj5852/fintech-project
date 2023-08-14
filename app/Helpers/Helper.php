@@ -9,13 +9,13 @@ use Illuminate\Support\Facades\Auth;
 
 class Helper
 {
-    public static function upload_image($filename , $width , $height)
+    public static function upload_image($filename , $width , $height, $path = 'backend/assets/images/')
     {
         $imagename = uniqid().'.'.$filename->getClientOriginalExtension();
         $new_webp = preg_replace('"\.(jpg|jpeg|png|webp)$"', '.webp', $imagename);
 
-        Image::make($filename)->encode('webp', 90)->fit($width, $height)->save('backend/assets/images/'.$new_webp);
-        $image_upload = 'backend/assets/images/'.$new_webp;
+        Image::make($filename)->encode('webp', 90)->fit($width, $height)->save($path.$new_webp);
+        $image_upload = $path.$new_webp;
         return $image_upload;
     }
 

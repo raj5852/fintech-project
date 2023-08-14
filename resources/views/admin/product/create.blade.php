@@ -177,6 +177,7 @@
                                 value="1">
                             <label class="form-check-label" for="flexSwitchCheckChecked">Free Product</label>
                         </div>
+
                         <br>
                         <div class="row mt-3">
                             <div class="mb-3 col-lg-6 col-md-12">

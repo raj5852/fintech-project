@@ -48,6 +48,7 @@ class PreorderService
         $order->coupon_amount = 0;
         $order->payment_method = $wellat;
         $order->coupon = '';
+        $order->is_preorder = 1;
         $order->save();
 
 

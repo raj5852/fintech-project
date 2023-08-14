@@ -35,8 +35,8 @@ class CheckoutService
             $orderDetails->product_name = $product->product_name;
             $orderDetails->product_id = $product->id;
             $orderDetails->product_qty = 1;
-            $orderDetails->unit_price = $product->product_price;
-            $orderDetails->product_price = $product->product_price;
+            $orderDetails->unit_price = $product->discount_price;
+            $orderDetails->product_price = $product->discount_price;
             $orderDetails->membership_id = UserActiveMembership::checkProductMembership($product->id, $user->id);
             $orderDetails->save();
         }

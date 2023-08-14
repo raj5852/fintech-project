@@ -3,15 +3,18 @@
         <ul class="items">
             {{-- Previous Page Link --}}
             @if ($paginator->onFirstPage())
-                <li class="disabled"><span>&laquo;</span></li>
+                <li>
+                    <button class="common-btn disabled" ><span>&laquo;</span></button>
+                </li>
             @else
                 <li><a class="common-btn" href="{{ $paginator->previousPageUrl() }}" rel="prev">&laquo;</a></li>
             @endif
 
             {{-- First 5 Pages --}}
             @for ($i = 1; $i <= min(5, $paginator->lastPage()); $i++)
-                <li class="{{ $paginator->currentPage() == $i ? 'active' : '' }}">
-                    <a class="common-btn" href="{{ $paginator->url($i) }}">{{ $i }}</a>
+                <li>
+                    <a class="common-btn {{ $paginator->currentPage() == $i ? 'active' : '' }}"
+                        href="{{ $paginator->url($i) }}">{{ $i }}</a>
                 </li>
             @endfor
 
@@ -19,8 +22,9 @@
             @if ($paginator->lastPage() > 5)
                 <li><span>...</span></li>
                 @for ($i = max($paginator->lastPage() - 4, 6); $i <= $paginator->lastPage(); $i++)
-                    <li class=" {{ $paginator->currentPage() == $i ? 'active' : '' }}">
-                        <a class="common-btn" href="{{ $paginator->url($i) }}">{{ $i }}</a>
+                    <li>
+                        <a class="common-btn {{ $paginator->currentPage() == $i ? 'active' : '' }}"
+                            href="{{ $paginator->url($i) }}">{{ $i }}</a>
                     </li>
                 @endfor
             @endif
@@ -29,7 +33,9 @@
             @if ($paginator->hasMorePages())
                 <li><a class="common-btn" href="{{ $paginator->nextPageUrl() }}" rel="next">&raquo;</a></li>
             @else
-                <li class=" disabled"><span>&raquo;</span></li>
+                <li>
+                    <button class="common-btn disabled" href=""><span>&raquo;</span></button>
+                </li>
             @endif
         </ul>
     </div>

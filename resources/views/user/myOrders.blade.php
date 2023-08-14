@@ -21,7 +21,7 @@
 
 
             {{-- mobile side bar  --}}
-            <x-profile.mobile-sidebar />
+            <x-profile.mobile-sidebar :userGroups="$userGroups" />
 
 
             <div class="mobile-show-content">
@@ -42,7 +42,7 @@
                 <div class="row gx-5">
                     {{-- desktop side bar  --}}
 
-                    <x-profile.large-sidebar :userDetails="$userDetails" />
+                    <x-profile.large-sidebar :userGroups="$userGroups" :userDetails="$userDetails" />
 
 
 

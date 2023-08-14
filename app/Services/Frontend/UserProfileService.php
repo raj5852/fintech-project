@@ -5,6 +5,7 @@ namespace App\Services\Frontend;
 use App\Models\Admin\Membership;
 use App\Models\Admin\Order;
 use App\Models\Admin\Product;
+use App\Models\Discussion;
 use App\Models\User;
 
 class UserProfileService
@@ -24,6 +25,14 @@ class UserProfileService
         $user->membership_active_exists = $hasActiveMemberships;
 
         return $user;
+    }
+
+    static   function userGroup()
+    {
+        $user = auth()->user();
+        return    Discussion::whereHas('discussionUsers', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->get();
     }
 
     function userMembershipProduct()

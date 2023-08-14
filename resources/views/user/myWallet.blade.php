@@ -13,7 +13,7 @@
 
 
             <!-- mobile version 992px -->
-            <x-profile.mobile-sidebar />
+            <x-profile.mobile-sidebar :userGroups="$userGroups" />
 
             <div class="mobile-show-content">
                 <x-profile.mywallet-content />
@@ -29,7 +29,7 @@
             </div>
             <div class="dashboard__main">
                 <div class="row gx-5">
-                    <x-profile.large-sidebar :userDetails="$userDetails" />
+                    <x-profile.large-sidebar :userGroups="$userGroups" :userDetails="$userDetails" />
 
 
 

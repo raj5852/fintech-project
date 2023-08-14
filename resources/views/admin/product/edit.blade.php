@@ -166,9 +166,13 @@
 
                                     @foreach ($meberships as $membership)
                                         <option
-                                            @if (count($data->memberships) > 0) @foreach ($data->memberships as $postMember)
-                                {{ $postMember->id == $membership->id ? 'selected' : '' }}
-                            @endforeach @endif
+                                            @if (count($data->memberships) > 0)
+
+                                            @foreach ($data->memberships as $postMember)
+                                                {{ $postMember->id == $membership->id ? 'selected' : '' }}
+                                            @endforeach
+
+                                             @endif
                                             value="{{ $membership->id }}">{{ $membership->membership_name }}</option>
                                     @endforeach
                                 </select>
@@ -298,11 +302,10 @@
                                     @foreach ($data->product_url as $link => $version)
                                         <tr>
                                             <td><input type="text" name="product_url[]" placeholder="Product URL"
-                                                    class="form-control name_list" value="{{ $link }}"
-                                                     /></td>
+                                                    class="form-control name_list" value="{{ $link }}" /></td>
                                             <td><input type="text" name="product_version[]"
                                                     placeholder="Product Version" value="{{ $version }}"
-                                                    class="form-control name_list"  /></td>
+                                                    class="form-control name_list" /></td>
                                             <td>
 
                                                 @if ($loop->first)

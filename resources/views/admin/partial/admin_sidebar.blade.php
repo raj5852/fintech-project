@@ -43,6 +43,22 @@
             </ul>
         </li>
 
+        <li>
+            <a href="javascript:;" class="has-arrow">
+                <div class="parent-icon"><i class="bx bx-category"></i>
+                </div>
+                <div class="menu-title">Discussions</div>
+            </a>
+            <ul>
+                <li> <a href="{{ url('admin/discussion/create') }}"><i class="bx bx-right-arrow-alt"></i>Create Discussion</a>
+                </li>
+
+                <li> <a href="{{ url('admin/discussion') }}"><i class="bx bx-right-arrow-alt"></i>All Discussion channels</a>
+                </li>
+
+            </ul>
+        </li>
+
 
 
 
@@ -81,7 +97,10 @@
             </a>
             <ul>
                 <li> <a href="{{ url('admin/order') }}"><i class="bx bx-right-arrow-alt"></i>All Orders</a></li>
+                <li> <a href="{{ url('admin/order/pre-orders') }}"><i class="bx bx-right-arrow-alt"></i>Preorders</a></li>
                 <li> <a href="{{ url('admin/order/email') }}"><i class="bx bx-right-arrow-alt"></i>Orders Email</a>
+                <li>
+                    <a href="{{ url('admin/order/addorder/create') }}"><i class="bx bx-right-arrow-alt"></i>Add order for user</a>
                 </li>
             </ul>
         </li>

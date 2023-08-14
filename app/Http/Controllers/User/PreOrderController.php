@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Product;
+use App\Models\PrivatePost;
 use Illuminate\Http\Request;
 
 class PreOrderController extends Controller

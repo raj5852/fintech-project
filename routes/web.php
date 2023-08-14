@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AddOrderController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +30,7 @@ use App\Http\Controllers\Admin\AboutOneController;
 use App\Http\Controllers\Admin\AboutTwoController;
 use App\Http\Controllers\Admin\BackupControler;
 use App\Http\Controllers\Admin\BalanceController;
+use App\Http\Controllers\Admin\DiscussionController;
 use App\Http\Controllers\Admin\FixedSpecificationController;
 use App\Http\Controllers\Admin\ManageApiController;
 use App\Http\Controllers\Admin\MedicineController;
@@ -63,8 +65,10 @@ use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Frontend\CommentController;
 use App\Http\Controllers\Frontend\RenewController;
 use App\Http\Controllers\NowPaymentRedirectController;
+use App\Http\Controllers\User\DiscussionController as UserDiscussionController;
 use App\Http\Controllers\User\NotificationController as UserNotificationController;
 use App\Http\Controllers\User\PreOrderController;
+use App\Http\Controllers\User\PrivateCommentController;
 use App\Http\Controllers\User\ResetController;
 use App\Mail\ProductEmail;
 use App\Models\Admin\Membership;
@@ -104,8 +108,6 @@ Route::get('/membership', [FrontController::class, 'membership'])->name('members
 Route::get('/shop', [FrontController::class, 'shop'])->name('shop');
 Route::get('/customer-request', [FrontController::class, 'customerRequest'])->name('customer.request');
 Route::get('/product/details/{product_slug}', [FrontController::class, 'productDetails'])->name('product.details');
-Route::get('/discussion', [FrontController::class, 'discussion'])->name('discussion');
-Route::get('/discussionDetails', [FrontController::class, 'discussionDetails'])->name('discussionDetails');
 Route::get('/preorder-view', [FrontController::class, 'preorder_view'])->name('preorder_view');
 Route::get('/license', [FrontController::class, 'license'])->name('license');
 Route::get('/preorder-details/{slug}', [FrontController::class, 'preorder_details'])->name('preorder_details');
@@ -275,11 +277,18 @@ Route::prefix('user')->middleware(['auth', 'user-access:user', 'verified'])->gro
 
     // pre-order-payment
     Route::post('pre-order-payment/{slug}', [PreOrderController::class, 'payment'])->name('pre-order-payment');
+
+    // Route::post('/discussion', [FrontController::class, 'store'])->name('user.discussion');
 });
 
 Route::middleware(['auth'])->group(function () {
     Route::post('comment-delete', [AdminAndUserCommentController::class, 'delete'])->name('comment.delete');
     Route::post('comment-to-product', [AdminAndUserCommentController::class, 'store'])->name('comment-to-product');
+    Route::resource('userdiscussion', UserDiscussionController::class);
+    Route::get('/discussionDetails/{PrivatePost}', [FrontController::class, 'discussionDetails'])->name('discussionDetails');
+    Route::get('/discussion/{slug}', [FrontController::class, 'discussion'])->name('discussion');
+    Route::get('/private-comments/{postid}', [FrontController::class, 'privatecomments'])->name('privatecomments');
+    Route::resource('privatecomment', PrivateCommentController::class);
 });
 
 
@@ -337,10 +346,14 @@ Route::prefix('admin')->middleware(['auth', 'user-access:admin'])->group(functio
     Route::get('about/us', [AboutController::class, 'AboutUs'])->name('about.us');
     Route::post('update/about/{id}', [AboutController::class, 'AboutUpdate'])->name('update.about');
 
+
     Route::group(['prefix' => 'order'], function () {
         Route::get('/', [OrderController::class, 'ALlOrder'])->name('admin.order');
         Route::get('/email', [OrderController::class, 'orderEmail'])->name('admin.order.email');
         Route::get('view/{id}', [OrderController::class, 'OrderView'])->name('view.view');
+        Route::get('pre-orders', [OrderController::class, 'preorders'])->name('admin.preorders');
+        Route::get('order-delete/{id}', [OrderController::class, 'orderdelete'])->name('admin.orderdelete');
+        Route::resource('addorder', AddOrderController::class)->only('create','store');
     });
 
 
@@ -575,6 +588,9 @@ Route::prefix('admin')->middleware(['auth', 'user-access:admin'])->group(functio
     Route::get('/notification-clear', [NotificationController::class, 'clear']);
 
     Route::get('database-backup', [BackupControler::class, 'index'])->name('admin.databse-backup');
+
+    //discussion
+    Route::resource('discussion', DiscussionController::class);
 });
 Route::post('custom-reset-password', [ResetController::class, 'index'])->name('custom.password.reset');
 
@@ -588,5 +604,8 @@ Route::get('migrate', function () {
 });
 
 Route::get('demo', function () {
-    return bcrypt('password');
+
+    // abort(1==1,403);
+
+    return auth()->user();
 });

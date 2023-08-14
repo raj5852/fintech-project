@@ -25,8 +25,8 @@
 
 
 
-{{--
-@if ($errors->any())
+
+{{-- @if ($errors->any())
     <div>
         <ul>
             @foreach ($errors->all() as $error)

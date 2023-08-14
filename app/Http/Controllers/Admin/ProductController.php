@@ -51,7 +51,7 @@ class ProductController extends Controller
         $products = Product::latest()
             ->where('pre_order_status', 1)
             ->with('category')
-            ->select('category_id', 'id', 'product_name', 'discount_price', 'pre_order_status', 'minimum_orders', 'thumbnail','status')
+            ->select('category_id', 'id', 'product_name', 'discount_price', 'pre_order_status', 'minimum_orders', 'thumbnail', 'status')
             ->when(request('search'), function ($query) {
                 return $query->where('product_name', 'like', '%' . request('search') . '%');
             })
@@ -209,7 +209,6 @@ class ProductController extends Controller
     {
         $data          = Product::find($id);
 
-        // foreach($data )
 
         $more_image    = json_decode($data->images, true);
         $categories    = Category::all();
@@ -337,11 +336,11 @@ class ProductController extends Controller
         $currentDate = Carbon::now();
         $formattedDate = $currentDate->format('Y-m-d');
 
-        if($data->pre_order_status == 0 && $data->minimum_orders != 0){
+        if ($data->pre_order_status == 0 && $data->minimum_orders != 0) {
             ProductService::membershipNotification($product);
 
             $data->minimum_orders = 0;
-             $data->save();
+            $data->save();
         }
 
 

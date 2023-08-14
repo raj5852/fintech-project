@@ -5,6 +5,9 @@
         <li><a class="item common-btn {{ request()->is('user/my-orders')?'active':'' }} " href="{{ route('user.my-orders') }}">My Orders</a></li>
         <li><a class="item common-btn {{ request()->is('user/my-wallet')?'active':'' }}" href="{{ route('user.my-wallet') }}">My Wallet</a></li>
         <li><a class="item common-btn {{ request()->is('user/my-wishlist')?'active':'' }}" href="{{ route('user.my-wishlist') }}">My Wishlist</a></li>
+        @foreach ($userGroups as $usergroup)
+        <li><a class="item common-btn" href="{{ url('discussion',$usergroup->slug)}}">{{ $usergroup->name }} </a></li>
+        @endforeach
         <li><a class="item common-btn {{ request()->is('user/membership-product')?'active':'' }}" href="{{ route('user.membership-product') }}">Membership Product</a></li>
         <li><a class="item common-btn {{ request()->is('user/edit-profile')?'active':'' }}" href="{{ route('user.edit-profile') }}">Edit Profile</a></li>
         <li><a class="item common-btn" href="{{ route('logout') }}">Logout</a></li>

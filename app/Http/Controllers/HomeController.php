@@ -35,15 +35,19 @@ class HomeController extends Controller
     public function index(UserProfileService $userProfileService)
     {
          $userDetails =  $userProfileService->userWithMembership();
-        return view('user.home', compact('userDetails'));
+        $userGroups =  $userProfileService::userGroup();
+
+        return view('user.home', compact('userDetails','userGroups'));
 
     }
 
     public function myOrders(UserProfileService $userProfileService) {
         $userDetails =  $userProfileService->userWithMembership();
+        $userGroups =  $userProfileService::userGroup();
+
         $orders =  $userProfileService->userOrders();
 
-        return view('user.myOrders', compact('userDetails','orders'));
+        return view('user.myOrders', compact('userDetails','orders','userGroups'));
     }
     public function myOrderDetails(UserProfileService $userProfileService) {
         $userDetails =  $userProfileService->userWithMembership();
@@ -53,24 +57,26 @@ class HomeController extends Controller
 
     public function myWallet(UserProfileService $userProfileService) {
         $userDetails =  $userProfileService->userWithMembership();
+        $userGroups =  $userProfileService::userGroup();
 
-        return view('user.myWallet',compact('userDetails'));
+        return view('user.myWallet',compact('userDetails','userGroups'));
     }
     public function myWishlist(UserProfileService $userProfileService) {
         $userDetails =  $userProfileService->userWithMembership();
+        $userGroups =  $userProfileService::userGroup();
 
-        return view('user.myWishlist',compact('userDetails'));
+        return view('user.myWishlist',compact('userDetails','userGroups'));
     }
     public function membershipProduct(UserProfileService $userProfileService) {
         $userDetails =  $userProfileService->userWithMembership();
-        // $userProfileService->userMembershipProduct();
 
         return view('user.membershipProduct', compact('userDetails'));
     }
     public function editProfile(UserProfileService $userProfileService) {
         $userDetails =  $userProfileService->userWithMembership();
+        $userGroups =  $userProfileService::userGroup();
 
-        return view('user.editProfile',compact('userDetails'));
+        return view('user.editProfile',compact('userDetails','userGroups'));
     }
     public function changePassword() {
         return view('user.changePassword');

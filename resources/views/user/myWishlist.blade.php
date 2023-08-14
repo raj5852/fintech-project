@@ -14,7 +14,7 @@
             <x-profile.profile :userDetails="$userDetails" />
 
             <!-- mobile version 992px -->
-            <x-profile.mobile-sidebar />
+            <x-profile.mobile-sidebar :userGroups="$userGroups" />
 
             <div class="mobile-show-content">
                 <!-- new table start  -->
@@ -30,7 +30,7 @@
             </div>
             <div class="dashboard__main">
                 <div class="row gx-5">
-                    <x-profile.large-sidebar :userDetails="$userDetails" />
+                    <x-profile.large-sidebar :userGroups="$userGroups" :userDetails="$userDetails" />
 
                     <div class="col-xl-8">
                         <div class="tab-content" id="v-pills-tabContent">

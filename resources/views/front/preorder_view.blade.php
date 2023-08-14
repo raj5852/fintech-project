@@ -90,60 +90,8 @@
         </script>
 
         <!-- new  pagination  -->
-        <div class="pagination-wrap-ab mb-5">
-            <ul class="items">
-                <li>
+        {{ $preorders->links('vendor.pagination.default') }}
 
-                    <a href="#" class="common-btn"><i class="fa-solid fa-angle-left"></i></a>
-                </li>
-                <li>
-
-                    <a href="#" class="common-btn active">1</a>
-                </li>
-                <li>
-                    <a href="#" class="common-btn">2</a>
-
-                </li>
-                <li>
-                    <a href="#" class="common-btn">3</a>
-
-                </li>
-                <li>
-                    <a href="#" class="common-btn">4</a>
-
-                </li>
-                <li>
-                    <a href="#" class="common-btn">5</a>
-
-                </li>
-                <li>
-
-                    <a href="#" class="common-btn "><i class="fa-solid fa-ellipsis"></i></a>
-                </li>
-                <li>
-                    <a href="#" class="common-btn">2</a>
-
-                </li>
-                <li>
-                    <a href="#" class="common-btn">3</a>
-
-                </li>
-                <li>
-                    <a href="#" class="common-btn">4</a>
-
-                </li>
-                <li>
-                    <a href="#" class="common-btn">5</a>
-
-                </li>
-                <li>
-                    <a href="#" class="common-btn"><i class="fa-solid fa-angle-right"></i></a>
-
-                </li>
-
-
-            </ul>
-        </div>
     </section>
 
 
