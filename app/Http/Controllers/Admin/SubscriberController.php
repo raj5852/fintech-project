@@ -17,6 +17,7 @@ class SubscriberController extends Controller
      */
     public function index()
     {
+        checkpermission('subscriber');
         $data = Subscriber::latest()->get();
         return view('admin.subscriber.index',compact('data'));
     }
@@ -91,7 +92,7 @@ class SubscriberController extends Controller
             'alert-type'=>'success'
              );
            return Redirect()->back()->with($notification);
-  
+
     }
 
 
@@ -116,6 +117,6 @@ class SubscriberController extends Controller
                 'alert-type'=>'success'
                  );
                return Redirect()->back()->with($notification);
-   
+
     }
 }

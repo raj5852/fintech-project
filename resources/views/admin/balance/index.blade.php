@@ -17,8 +17,22 @@
                         <div class="">
                             <div class="row">
                                 <div class="col-7">
-                                    <h5 class="mb-0">Add User Balance</h5>
+                                    {{-- <h5 class="mb-0">Add User Balance</h5> --}}
+                                    <form action="{{ route('balance.index') }}" method="GET">
 
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <input type="number" class="form-control"  name="min" value="{{ request()->min  }} " placeholder="Min" required>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <input type="number" class="form-control" name="max" placeholder="Max" value="{{ request()->max  }} " required>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button class="btn btn-primary ">Submit</button>
+
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
                                 <div class="col-5">
                                     <form action="{{ route('balance.index') }}" method="GET">
@@ -56,12 +70,13 @@
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
                                         <td>
-                                            {{ number_format ($user->balance,2) }}
+                                            {{ number_format($user->balance, 2) }}
 
                                         </td>
                                         <td>
 
-                                            <a href="{{ route('balance.edit',$user->id) }}" class="btn btn-primary btn-sm">Edit Balance</a>
+                                            <a href="{{ route('balance.edit', $user->id) }}"
+                                                class="btn btn-primary btn-sm">Edit Balance</a>
 
                                         </td>
                                     </tr>

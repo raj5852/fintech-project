@@ -5,6 +5,7 @@ namespace App\Services\Admin;
 use App\Models\User;
 use App\Notifications\NewProductNotification;
 use App\Notifications\ProductUpdateNotification;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 
 /**
@@ -45,6 +46,7 @@ class ProductService
     static function editProductNotification($product)
     {
 
+        Log::info('..');
         $mailsubject =  'Exciting News! Discover the ' . $product->product_name . ' Update!';
         $productId = $product->id;
 

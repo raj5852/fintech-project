@@ -15,14 +15,17 @@ class BalanceController extends Controller
      */
     public function index(Request $request)
     {
-           // return User::find(1)->hasOneSub;
-           $users = User::query()
-           ->latest()
-           ->where('type','!=','admin')
-           ->when($request->emailSearch, fn ($q, $email) => $q->where('email', 'like', "%{$email}%"))
-           ->with('subscriptions')
-           ->paginate(10)
-           ->withQueryString();
+        checkpermission('manage-wallet');
+
+        $users = User::query()
+        ->latest()
+        ->where('type', '!=', 'admin')
+        ->when($request->emailSearch, fn ($q, $email) => $q->where('email', 'like', "%{$email}%"))
+        ->when($request->min && $request->max, fn ($q) => $q->whereBetween('balance', [$request->min, $request->max]))
+        ->paginate(10)
+        ->withQueryString();
+
+
        return view('admin.balance.index', compact('users'))->with('i', (request()->input('page', 1) - 1) * 10);
 
     }
@@ -67,6 +70,8 @@ class BalanceController extends Controller
      */
     public function edit($id)
     {
+        checkpermission('manage-wallet');
+
         $user = User::find($id);
 
         return view('admin.balance.edit',compact('user'));

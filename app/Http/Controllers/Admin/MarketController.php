@@ -10,7 +10,7 @@ class MarketController extends Controller
 {
     public function index()
     {
-
+        checkpermission('home-page-setting');
         $markets=MarketPlace::all();
         return view('admin.website.market.index',compact('markets'));
 
@@ -18,6 +18,8 @@ class MarketController extends Controller
 
     public function add()
     {
+        checkpermission('home-page-setting');
+
         return view('admin.website.market.add');
     }
 

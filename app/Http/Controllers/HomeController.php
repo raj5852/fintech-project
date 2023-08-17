@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Admin\Membership;
 use App\Models\Admin\Order;
+use App\Models\Admin\OrderDetails;
 use Illuminate\Http\Request;
 use App\Models\Admin\Product;
 
 
 use App\Models\User;
 use App\Models\User\Subscription;
+use App\Models\User\WishList;
 use App\Services\Backend\PendingUserService;
 use App\Services\Frontend\UserProfileService;
 use Illuminate\Support\Facades\DB;
@@ -34,51 +36,74 @@ class HomeController extends Controller
      */
     public function index(UserProfileService $userProfileService)
     {
-         $userDetails =  $userProfileService->userWithMembership();
+        $userDetails =  $userProfileService->userWithMembership();
         $userGroups =  $userProfileService::userGroup();
 
-        return view('user.home', compact('userDetails','userGroups'));
-
+        return view('user.home', compact('userDetails', 'userGroups'));
     }
 
-    public function myOrders(UserProfileService $userProfileService) {
+    public function myOrders(UserProfileService $userProfileService)
+    {
         $userDetails =  $userProfileService->userWithMembership();
         $userGroups =  $userProfileService::userGroup();
 
         $orders =  $userProfileService->userOrders();
 
-        return view('user.myOrders', compact('userDetails','orders','userGroups'));
+        return view('user.myOrders', compact('userDetails', 'orders', 'userGroups'));
     }
-    public function myOrderDetails(UserProfileService $userProfileService) {
+    public function myOrderDetails(UserProfileService $userProfileService, int $productId)
+    {
         $userDetails =  $userProfileService->userWithMembership();
 
-        return view('user.myOrderDetails',compact('userDetails'));
+        $is_exists = user_product($productId);
+
+        if ($is_exists != 1) {
+            return to_route('user.home')->with('error', 'Membership expire!');
+        }
+
+        $product = Product::findOrFail($productId);
+
+
+        $userGroups =  $userProfileService::userGroup();
+        $userOrder = OrderDetails::where('product_id', $productId)->withWhereHas('order', function ($query) {
+            $query->where('user_id', auth()->user()->id)->select('id');
+        })->first();
+
+        return view('user.myOrderDetails', compact('userDetails', 'userOrder', 'product', 'userGroups'));
     }
 
-    public function myWallet(UserProfileService $userProfileService) {
+    public function myWallet(UserProfileService $userProfileService)
+    {
         $userDetails =  $userProfileService->userWithMembership();
         $userGroups =  $userProfileService::userGroup();
 
-        return view('user.myWallet',compact('userDetails','userGroups'));
+        return view('user.myWallet', compact('userDetails', 'userGroups'));
     }
-    public function myWishlist(UserProfileService $userProfileService) {
+    public function myWishlist(UserProfileService $userProfileService)
+    {
         $userDetails =  $userProfileService->userWithMembership();
         $userGroups =  $userProfileService::userGroup();
+        $wishlists = WishList::where('user_id', auth()->user()->id)->with('product', function ($query) {
+            $query->select('id', 'thumbnail', 'discount_price','product_name','product_slug');
+        })->paginate(10);
 
-        return view('user.myWishlist',compact('userDetails','userGroups'));
+        return view('user.myWishlist', compact('userDetails', 'userGroups', 'wishlists'));
     }
-    public function membershipProduct(UserProfileService $userProfileService) {
+    public function membershipProduct(UserProfileService $userProfileService)
+    {
         $userDetails =  $userProfileService->userWithMembership();
 
         return view('user.membershipProduct', compact('userDetails'));
     }
-    public function editProfile(UserProfileService $userProfileService) {
+    public function editProfile(UserProfileService $userProfileService)
+    {
         $userDetails =  $userProfileService->userWithMembership();
         $userGroups =  $userProfileService::userGroup();
 
-        return view('user.editProfile',compact('userDetails','userGroups'));
+        return view('user.editProfile', compact('userDetails', 'userGroups'));
     }
-    public function changePassword() {
+    public function changePassword()
+    {
         return view('user.changePassword');
     }
     public function order()
@@ -98,6 +123,8 @@ class HomeController extends Controller
      */
     public function adminHome(Request $request)
     {
+        checkpermission('dashboard');
+
         $totalMemberShip = User::where('subscribe_id', '!=', 0)->count();
 
         return view('admin.adminHome', compact('totalMemberShip'));
@@ -105,6 +132,8 @@ class HomeController extends Controller
 
     function allusers(Request $request)
     {
+        checkpermission('memberships');
+
         // return User::find(1)->hasOneSub;
         $users = User::query()
             ->latest()
@@ -118,6 +147,8 @@ class HomeController extends Controller
 
     function addSubscription($id)
     {
+
+        checkpermission('memberships');
         $memberships = Membership::get();
         $user = User::find($id);
         return view('admin.add-subscription', compact('user', 'memberships'));
@@ -164,6 +195,8 @@ class HomeController extends Controller
 
     function editSubscription($id)
     {
+        checkpermission('memberships');
+
         $user = User::find($id);
 
         $subscription = Subscription::find($user->hasOneSub)[0];
@@ -208,6 +241,8 @@ class HomeController extends Controller
 
     function deleteSubscription($id)
     {
+
+        checkpermission('memberships');
         $user = User::find($id);
         $user->subscribe_id = 0;
         $user->save();
@@ -220,34 +255,46 @@ class HomeController extends Controller
 
     function pendingUser()
     {
+        checkpermission('pending-user');
         $users =   PendingUserService::allPendinguser();
         return view('admin.users.pendinguser', compact('users'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
     function pendingToActive($id)
     {
+        checkpermission('pending-user');
         $updateEmail =  PendingUserService::pendingToActive($id);
         return redirect()->back()->with('success', 'Email verified successfully!');
     }
-    public function genarelMembers() {
+    public function genarelMembers()
+    {
+        checkpermission('memberships');
         $members = User::where('subscribe_id', 0)->latest()->paginate(10);
         return view('admin.users.genarelUser', compact('members'));
     }
-    public function vipMembers() {
+    public function vipMembers()
+    {
+        checkpermission('memberships');
 
         $members = User::where('subscribe_id', 3)->latest()->paginate(10);
         return view('admin.users.vipUser', compact('members'));
     }
-    public function premiumMembers() {
+    public function premiumMembers()
+    {
+        checkpermission('memberships');
 
         $members = User::where('subscribe_id', 4)->latest()->paginate(10);
         return view('admin.users.premiumUser', compact('members'));
     }
-    public function eliteMembers() {
+    public function eliteMembers()
+    {
+        checkpermission('memberships');
 
         $members = User::where('subscribe_id', 5)->latest()->paginate(10);
         return view('admin.users.eliteUser', compact('members'));
     }
-    public function resellerMembers() {
+    public function resellerMembers()
+    {
+        checkpermission('memberships');
 
         $members = User::where('subscribe_id', 6)->latest()->paginate(10);
         return view('admin.users.resellerUser', compact('members'));

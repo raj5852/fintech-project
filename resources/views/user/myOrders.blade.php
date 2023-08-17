@@ -3,14 +3,12 @@
     My Orders
 @endsection
 @section('front_content')
-    @push('css')
-    @endpush
 
     <x-profile.header />
 
 
 
-    </div>
+
     <!-- dashboard  -->
 
     <div class="dashboard">
@@ -28,7 +26,7 @@
 
                 <!-- new table start  -->
 
-                <x-profile.orders-content />
+                <x-profile.orders-content :orders="$orders" />
                 <!-- new table end  -->
             </div>
             <!-- end mobile version 992px -->
@@ -55,7 +53,7 @@
                                     <div class="dashboard__profile-order">
                                         <span class="dashboard__profile-bltitle">Order List</span>
 
-                                        <x-profile.orders-content />
+                                        <x-profile.orders-content :orders="$orders" />
 
                                     </div>
                                 </div>

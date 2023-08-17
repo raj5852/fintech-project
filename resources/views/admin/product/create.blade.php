@@ -90,7 +90,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="mb-3 select2-sm col-md-4" id="subCategory" >
+                            <div class="mb-3 select2-sm col-md-4" id="subCategory">
                                 <label class="form-label">Sub-category</label>
                                 <select class="single-select" name="subcategory_id">
 
@@ -135,13 +135,6 @@
                             </div>
 
 
-
-
-
-
-
-
-
                             <div class="mb-3 select2-sm col-md-4" id="membershipItem">
                                 <label class="form-label">For Membership <sup class="text-danger">*</sup></label>
                                 <select class="single-select" name="memberships[]" multiple>
@@ -154,8 +147,8 @@
                             </div>
 
 
-                            {{-- <div class="col-md-4">
-                                <label for="inputCity" class="form-label">Commission type</label>
+                            <div class="col-md-4">
+                                <label for="" class="form-label">Cashback type</label>
                                 <select class="form-control" name="commission_type[]" id="inputFirstName">
                                     <option value="" disabled selected>---Select--</option>
                                     <option value="Flat">Flat</option>
@@ -163,10 +156,10 @@
                                 </select>
                             </div>
                             <div class="col-md-4">
-                                <label for="inputCity" class="form-label">Commission Rate</label>
+                                <label for="" class="form-label">Commission Rate</label>
                                 <input type="number" class="form-control" name="commission_rate[]"
                                     placeholder="Enter discount rate" id="inputCity">
-                            </div> --}}
+                            </div>
 
                         </div>
                         <br>
@@ -208,13 +201,6 @@
                             </div>
                         </div>
 
-                        {{-- <div class="col-12 mt-3">
-                            <div class="mb-3">
-                                <label class="form-label">Product URL <sup class="text-danger">*</sup></label>
-                                <input type="url" class="form-control" placeholder="http://" name="product_url"
-                                    required value="{{ old('product_url') }}">
-                            </div>
-                        </div> --}}
 
 
 
@@ -224,9 +210,9 @@
                                 <table class="table" id="dynamic_field_url">
                                     <tr>
                                         <td><input type="text" name="product_url[]" placeholder="Product URL"
-                                                class="form-control name_list"  /></td>
+                                                class="form-control name_list" /></td>
                                         <td><input type="text" name="product_version[]" placeholder="Product Version"
-                                                class="form-control name_list"  /></td>
+                                                class="form-control name_list" /></td>
                                         <td><button type="button" name="add" id="addurl"
                                                 class="btn btn-sm btn-success">Add</button></td>
                                     </tr>
@@ -254,8 +240,24 @@
                         </textarea>
                         </div>
 
+                        <div class="col-12 mt-3">
+                            <div class="mb-3">
+                                <label class="form-label">Meta keyword <small class="text-danger"></small></label>
+                                <input type="text" class="form-control" placeholder="Enter tags" name="meta_keyword"
+                                    data-role="tagsinput">
+                            </div>
+                        </div>
 
-                        <div class="col-md-6"  id="minimum_orders">
+                        <div class="col-12">
+                            <label for="inputAddress2" class="form-label">Meta description <sup
+                                    class="text-danger">*</sup></label>
+                            <textarea class="form-control"  name="meta_description" placeholder="Address 2..." rows="3"
+                                value="{{ old('meta_description') }}">
+
+                        </textarea>
+                        </div>
+
+                        <div class="col-md-6" id="minimum_orders">
                             <label for="minimum_orders" class="form-label">Minimum orders <sup
                                     class="text-danger">*</sup></label>
                             <input type="number" class="form-control" placeholder="Enter Minimum orders(10)"

@@ -15,6 +15,7 @@ class SocialController extends Controller
      */
     public function index()
     {
+        checkpermission('home-page-setting');
         $data = Social::latest()->get();
         return view('admin.social.index',compact('data'));
     }
@@ -36,7 +37,7 @@ class SocialController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {   
+    {
         $validated = $request->validate([
             'icon_class' => 'required|unique:socials|max:255',
             'link'       => 'required|unique:socials|max:255',
@@ -50,7 +51,7 @@ class SocialController extends Controller
             'alert-type'=>'success'
              );
            return Redirect()->back()->with($notification);
-    
+
     }
 
     /**
@@ -85,7 +86,7 @@ class SocialController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {   
+    {
         $validated = $request->validate([
             'icon_class' => 'required|unique:socials,icon_class,'.$id,
             'link'       => 'required|unique:socials,link,'.$id,
@@ -99,7 +100,7 @@ class SocialController extends Controller
             'alert-type'=>'success'
              );
            return Redirect()->back()->with($notification);
-   
+
     }
 
     /**
@@ -110,6 +111,8 @@ class SocialController extends Controller
      */
     public function destroy($id)
     {
+        checkpermission('home-page-setting');
+
         Social::find($id)->delete();
 
         $notification=array(
@@ -117,7 +120,7 @@ class SocialController extends Controller
             'alert-type'=>'success'
              );
            return Redirect()->back()->with($notification);
-      
+
 
     }
 }

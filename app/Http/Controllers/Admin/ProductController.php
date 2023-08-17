@@ -19,6 +19,7 @@ use App\Notifications\ProductUpdateNotification;
 use App\Services\Admin\ProductService;
 use Carbon\Carbon;
 use File;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
@@ -34,6 +35,8 @@ class ProductController extends Controller
      */
     public function index()
     {
+        checkpermission('products');
+
         $products = Product::latest()
             ->where('pre_order_status', '==', 0)
             ->orWhere('pre_order_status', null)
@@ -47,7 +50,7 @@ class ProductController extends Controller
 
     function preorders()
     {
-
+        checkpermission('products');
         $products = Product::latest()
             ->where('pre_order_status', 1)
             ->with('category')
@@ -68,6 +71,8 @@ class ProductController extends Controller
      */
     public function create()
     {
+        checkpermission('products');
+
         $categories = Category::all();
         $brands    = Brand::all();
         $meberships  = Membership::all();
@@ -120,18 +125,15 @@ class ProductController extends Controller
         $data->description        = $request->description;
         $data->tag                = $request->tag;
         $data->buying_price       = $request->buying_price;
-        // $data->membership_id      = $request->membership_id;
         $data->membership_id  = json_encode($request->membership_id);
         $data->visibility         = $request->visibility;
         $data->is_free            = $request->is_free;
         $data->pre_order_status = $request->preorder;
         $data->minimum_orders = $request->minimum_orders;
         $data->product_url            =  array_combine($request->product_url, $request->product_version);
-        if ($request->commission_rate != null) {
-            if ($request->commission_type != null) {
-                $data->commissions = array_combine($request->commission_type, $request->commission_rate);
-            }
-        }
+        $data->meta_keyword = $request->meta_keyword;
+        $data->meta_description = $request->meta_description;
+
         $data->is_link_updated = CURRENT_TIME();
 
 
@@ -147,6 +149,22 @@ class ProductController extends Controller
         $data->discount_price   = Helper::discount($p_price, $d_rate, $d_type);
         //-----/Discount------
 
+
+        if ($request->commission_rate != null) {
+            if ($request->commission_type != null) {
+                $data->commissions = array_combine($request->commission_type, $request->commission_rate);
+                $data->total_cashback = $request->commission_type[0] == 'Flat' ?  $request->commission_rate[0] : (Helper::discount($p_price, $d_rate, $d_type) /100)*$request->commission_rate;
+            }
+        }
+
+        $versionYearAssoc = [];
+        $date = now();
+
+        foreach ($request->product_version as $index => $version) {
+            $versionYearAssoc[$version] = $date;
+        }
+
+        $data->linkupdated_time = $versionYearAssoc;
 
         $thumbnail = $request->thumbnail;
         if ($thumbnail) {
@@ -207,6 +225,8 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
+        checkpermission('products');
+
         $data          = Product::find($id);
 
 
@@ -227,6 +247,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
+
         $validated = $request->validate([
             'product_name' => 'required|unique:products,product_name,' . $id,
             'product_code' => 'required|unique:products,product_code,' . $id,
@@ -254,6 +275,16 @@ class ProductController extends Controller
 
         $product =    $data = Product::find($id);
 
+        $productlinkCount = count($product->product_url);
+
+
+        $is_new_user = false;
+
+
+        if ($product->is_new_user == 1 && $request->is_new_user == 0) {
+            $is_new_user = true;
+        };
+
         $is_link_updated = 0;
         $Request_linkcount = count($request->product_url);
         $product_linkCount = count(array_keys($data->product_url));
@@ -268,7 +299,6 @@ class ProductController extends Controller
         $data->product_name       = $request->product_name;
         $data->product_slug       = Str::slug($request->product_slug);
         $data->product_code       = $request->product_code;
-        // $data->product_title      = $request->product_title;
         $data->product_short_desc = $request->product_short_desc;
         $data->product_price      = $request->product_price;
         $data->category_id        = $request->category_id;
@@ -282,12 +312,11 @@ class ProductController extends Controller
         $data->pre_order_status = $request->preorder;
         $data->minimum_orders = $request->minimum_orders;
         $data->product_url            = array_combine($request->product_url, $request->product_version);
+        $data->is_new_user = $request->is_new_user == 1 ? 1 : 0;
 
-        if ($request->commission_rate != null) {
-            if ($request->commission_type != null) {
-                $data->commissions = array_combine($request->commission_type, $request->commission_rate);
-            }
-        }
+        $data->meta_keyword = $request->meta_keyword;
+        $data->meta_description = $request->meta_description;
+
 
         //----Discount-----
         $p_price = $data->product_price;
@@ -297,6 +326,14 @@ class ProductController extends Controller
         $data->discount_rate    = $request->discount_rate;
         $data->discount_price   = Helper::discount($p_price, $d_rate, $d_type);
         //-----/Discount------
+
+
+        if ($request->commission_rate != null) {
+            if ($request->commission_type != null) {
+                $data->commissions = array_combine($request->commission_type, $request->commission_rate);
+                $data->total_cashback = $request->commission_type[0] == 'Flat' ?  $request->commission_rate[0] : (Helper::discount($p_price, $d_rate, $d_type) /100)*$request->commission_rate[0];
+            }
+        }
 
         // $data->membership_id    = $request->membership_id;
         $data->visibility       = $request->visibility;
@@ -344,8 +381,9 @@ class ProductController extends Controller
         }
 
 
-
-        if ($is_link_updated == 1 && $data->status == 1 && $data->pre_order_status == 0) {
+        if ($is_link_updated == 1 && $data->status == 1 && $data->pre_order_status == 0 && $data->is_new_user != 1) {
+            ProductService::editProductNotification($product);
+        } elseif ($is_new_user == true) {
             ProductService::editProductNotification($product);
         }
 
@@ -362,6 +400,8 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
+        checkpermission('products');
+
         $data = Product::find($id);
 
         if (File::exists($data->thumbnail)) {
@@ -408,6 +448,8 @@ class ProductController extends Controller
 
     function stausChange($productId, $statusId)
     {
+        checkpermission('products');
+
         $product = Product::findOrFail($productId);
         if ($product) {
             $product->status = $statusId;
@@ -420,5 +462,32 @@ class ProductController extends Controller
 
             return \redirect()->back()->with('success', 'Status Updated Successfully!');
         }
+    }
+
+    function deleteurl($productId, $indexNumber)
+    {
+        $product = Product::find($productId);
+        $indexToRemove = $indexNumber; // Index of the element to remove
+
+        $data =  $product->product_url;
+
+        $urlKeys = array_keys($data);
+        if (isset($urlKeys[$indexToRemove])) {
+            unset($data[$urlKeys[$indexToRemove]]);
+        }
+
+        $product->product_url = $data;
+
+        $versionValue = $product->linkupdated_time;
+
+        $versionKeys = array_keys($versionValue);
+        if (isset($versionKeys[$indexToRemove])) {
+            unset($versionValue[$versionKeys[$indexToRemove]]);
+        }
+
+        $product->linkupdated_time = $versionValue;
+        $product->save();
+
+        return  back();
     }
 }

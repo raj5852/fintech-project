@@ -125,7 +125,7 @@ class WishListController extends Controller
      */
     public function destroy($id)
     {
-        WishList::find($id)->delete();
+        WishList::find($id)->where('user_id',auth()->user()->id)->delete();
         $notification = array(
             'messege'=>'Successfully Deleted!',
             'alert-type'=>'success'

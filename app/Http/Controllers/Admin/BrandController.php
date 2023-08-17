@@ -17,6 +17,7 @@ class BrandController extends Controller
      */
     public function index()
     {
+        checkpermission('brands');
         $data =Brand::latest()->get();
         return view('admin.brand.index',compact('data'));
     }
@@ -108,7 +109,7 @@ class BrandController extends Controller
             'alert-type'=>'success'
              );
            return Redirect()->back()->with($notification);
-    
+
     }
 
     /**
@@ -119,6 +120,7 @@ class BrandController extends Controller
      */
     public function destroy($id)
     {
+        checkpermission('brands');
         $data = Brand::find($id);
         if(file_exists($data->brand_image)){
             unlink($data->brand_image);
@@ -129,6 +131,6 @@ class BrandController extends Controller
             'alert-type'=>'success'
              );
            return Redirect()->back()->with($notification);
-   
+
     }
 }

@@ -12,11 +12,14 @@ class ManageApiController extends Controller
 {
     function index()
     {
+        checkpermission('manage-api');
         $datas = ManageAPI::all();
         return view('admin.api-manage.index', compact('datas'));
     }
     function edit($id)
     {
+        checkpermission('manage-api');
+
         $data = ManageAPI::find($id);
         return view('admin.api-manage.edit', compact('data'));
     }

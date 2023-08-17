@@ -17,6 +17,7 @@ class TestimonialController extends Controller
      */
     public function index()
     {
+        checkpermission('testimonial');
         $data = Testimonial::latest()->get();
         return view('admin.testimonial.index',compact('data'));
     }
@@ -119,6 +120,8 @@ class TestimonialController extends Controller
      */
     public function destroy($id)
     {
+        checkpermission('testimonial');
+
         $data = Testimonial::find($id);
         if(File::exists($data->image)){
             File::delete($data->image);

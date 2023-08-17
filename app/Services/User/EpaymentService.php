@@ -20,7 +20,7 @@ class EpaymentService
         $coupon = session()->has('coupon') ? session()->get('coupon')['code'] : "";
 
         $allproductsids =   Cart::content()->pluck('id');
-        $products = Product::query()->whereIn('id', $allproductsids)->select('id', 'product_price', 'product_name', 'product_url')->get();
+        $products = Product::query()->whereIn('id', $allproductsids)->select('id', 'product_price', 'product_name', 'product_url','total_cashback')->get();
 
         $producturls = $products->pluck('product_url');
         $urls = collect($producturls)
@@ -40,6 +40,7 @@ class EpaymentService
         session(['nopayment_product_url' => $urls]);
 
         $orderId_nowp = uniqid();
+        $totalCashback = $products->where('total_cashback','!=',null)->sum('total_cashback');
 
         $nowPaymentOrder = NowPaymentOrder::create([
             'user_id' => auth()->user()->id,
@@ -54,7 +55,8 @@ class EpaymentService
             'product_url' => json_encode($urls),
             'product_id' => json_encode($allproductsids),
             'subscribe_id' => $user->subscribe_id == 0 ? 'General  Member' : $user->member->membership_name,
-            'product_quantity' => json_encode(1)
+            'product_quantity' => json_encode(1),
+            'cashback'=>$totalCashback
         ]);
 
 

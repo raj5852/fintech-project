@@ -10,7 +10,7 @@ class AboutTwoController extends Controller
     public function index()
     {
 
-
+        checkpermission('about-page');
         $abouttwo = AboutTwo::all();
         return view('admin.website.abouttwo.index', compact('abouttwo'));
     }
@@ -38,8 +38,10 @@ class AboutTwoController extends Controller
 
     public function edit($id)
     {
+        checkpermission('about-page');
+
         $abouttwo = AboutTwo::find($id);
-       
+
         return view('admin.website.abouttwo.edit', compact('abouttwo'));
     }
 
@@ -61,6 +63,7 @@ class AboutTwoController extends Controller
 
     public function delete($id)
     {
+        checkpermission('about-page');
         AboutTwo::find($id)->delete();
         $notification = array(
             'messege' => 'AboutTwo Successfully Deleted !',

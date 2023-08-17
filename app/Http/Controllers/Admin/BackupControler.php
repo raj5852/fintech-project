@@ -9,6 +9,7 @@ class BackupControler extends Controller
 {
     function index()
     {
+        checkpermission('database-backup');
         $backupFileName = 'backup_' . time() . '.sql';
 
         // Set the appropriate headers for download

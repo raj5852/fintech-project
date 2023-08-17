@@ -15,6 +15,8 @@ class RequestProductController extends Controller
      */
     public function index()
     {
+        checkpermission('request-product');
+
         $data = RequestBooking::latest()->where('status',1)->where('payment_method','!=',null)->get();
 
         // return response()->json($data);

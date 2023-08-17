@@ -17,6 +17,8 @@ class AddOrderController extends Controller
      */
     public function create()
     {
+        checkpermission('orders');
+
         $users =  DB::table('users')->where('type','!=','admin')->select('id','email')->get();
         $products =  DB::table('products')->where('pre_order_status','!=',1)->select('id','product_name')->get();
 

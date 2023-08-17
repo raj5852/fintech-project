@@ -50,10 +50,12 @@
                 <div class="menu-title">Discussions</div>
             </a>
             <ul>
-                <li> <a href="{{ url('admin/discussion/create') }}"><i class="bx bx-right-arrow-alt"></i>Create Discussion</a>
+                <li> <a href="{{ url('admin/discussion/create') }}"><i class="bx bx-right-arrow-alt"></i>Create
+                        Discussion</a>
                 </li>
 
-                <li> <a href="{{ url('admin/discussion') }}"><i class="bx bx-right-arrow-alt"></i>All Discussion channels</a>
+                <li> <a href="{{ url('admin/discussion') }}"><i class="bx bx-right-arrow-alt"></i>All Discussion
+                        channels</a>
                 </li>
 
             </ul>
@@ -83,7 +85,8 @@
                 </li>
                 <li> <a href="{{ route('product.preorders') }}"><i class="bx bx-right-arrow-alt"></i>Preorders</a>
                 </li>
-                <li> <a href="{{ route('specification.index') }}"><i class="bx bx-right-arrow-alt"></i>Fixed Specifications</a>
+                <li> <a href="{{ route('specification.index') }}"><i class="bx bx-right-arrow-alt"></i>Fixed
+                        Specifications</a>
                 </li>
 
             </ul>
@@ -97,10 +100,12 @@
             </a>
             <ul>
                 <li> <a href="{{ url('admin/order') }}"><i class="bx bx-right-arrow-alt"></i>All Orders</a></li>
-                <li> <a href="{{ url('admin/order/pre-orders') }}"><i class="bx bx-right-arrow-alt"></i>Preorders</a></li>
+                <li> <a href="{{ url('admin/order/pre-orders') }}"><i class="bx bx-right-arrow-alt"></i>Preorders</a>
+                </li>
                 <li> <a href="{{ url('admin/order/email') }}"><i class="bx bx-right-arrow-alt"></i>Orders Email</a>
                 <li>
-                    <a href="{{ url('admin/order/addorder/create') }}"><i class="bx bx-right-arrow-alt"></i>Add order for user</a>
+                    <a href="{{ url('admin/order/addorder/create') }}"><i class="bx bx-right-arrow-alt"></i>Add order
+                        for user</a>
                 </li>
             </ul>
         </li>
@@ -111,14 +116,20 @@
                 <div class="menu-title">Manage Membership</div>
             </a>
             <ul>
-                <li> <a href="{{ route('index.membership') }}"><i class="bx bx-right-arrow-alt"></i>Add Membership</a></li>
+                <li> <a href="{{ route('index.membership') }}"><i class="bx bx-right-arrow-alt"></i>Add Membership</a>
+                </li>
                 <li> <a href="{{ route('admin.all-user') }}"><i class="bx bx-right-arrow-alt"></i>All Users</a></li>
 
-                <li> <a href="{{ route('admin.genarel-members') }}"><i class="bx bx-right-arrow-alt"></i>Genarel Member</a></li>
-                <li> <a href="{{ route('admin.vip-members') }}"><i class="bx bx-right-arrow-alt"></i>VIP Member</a></li>
-                <li> <a href="{{ route('admin.premium-members') }}"><i class="bx bx-right-arrow-alt"></i>Premium Member</a></li>
-                <li> <a href="{{ route('admin.elite-members') }}"><i class="bx bx-right-arrow-alt"></i>Elite Member</a></li>
-                <li> <a href="{{ route('admin.reseller-members') }}"><i class="bx bx-right-arrow-alt"></i>Reseller Member</a></li>
+                <li> <a href="{{ route('admin.genarel-members') }}"><i class="bx bx-right-arrow-alt"></i>Genarel
+                        Member</a></li>
+                <li> <a href="{{ route('admin.vip-members') }}"><i class="bx bx-right-arrow-alt"></i>VIP Member</a>
+                </li>
+                <li> <a href="{{ route('admin.premium-members') }}"><i class="bx bx-right-arrow-alt"></i>Premium
+                        Member</a></li>
+                <li> <a href="{{ route('admin.elite-members') }}"><i class="bx bx-right-arrow-alt"></i>Elite Member</a>
+                </li>
+                <li> <a href="{{ route('admin.reseller-members') }}"><i class="bx bx-right-arrow-alt"></i>Reseller
+                        Member</a></li>
             </ul>
         </li>
         <li>
@@ -140,11 +151,13 @@
             <ul>
 
 
-                <li> <a href="{{ route('index.productrequest') }}"><i class="bx bx-right-arrow-alt"></i>What Would You
+                <li> <a href="{{ route('index.productrequest') }}"><i class="bx bx-right-arrow-alt"></i>What Would
+                        You
                         Like To Do</a>
                 </li>
 
-
+                <li> <a href="{{ route('addrequest') }}"><i class="bx bx-right-arrow-alt"></i>Add Request </a>
+                </li>
                 <li> <a href="{{ route('index.productrequesttwo') }}"><i class="bx bx-right-arrow-alt"></i>Select
                         Platform</a>
                 </li>
@@ -282,12 +295,13 @@
         </a>
     </li>
 
-
-
-
-
-
-
+    {{-- <li>
+        <a href="" class="">
+            <div class="parent-icon"><i class='bx bx-download'></i>
+            </div>
+            <div class="menu-title">Database Backup</div>
+        </a>
+    </li> --}}
     </ul>
     <!--end navigation-->
 </div>

@@ -10,6 +10,7 @@ class FixedSpecificationController extends Controller
 {
     public function index()
     {
+        checkpermission('products');
         $datas =FixedSpecification::all();
         return view('admin.fixedSpecification.index',compact('datas'));
     }
@@ -70,6 +71,8 @@ class FixedSpecificationController extends Controller
 
     public function delete($id)
     {
+        checkpermission('products');
+
         $data = FixedSpecification::find($id);
 
         $data->delete();

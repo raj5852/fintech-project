@@ -15,6 +15,7 @@ class MembershipController extends Controller
      */
     public function index()
     {
+        checkpermission('memberships');
         $data = Membership::query()->get();
         return view('admin.membership.index',compact('data'));
     }
@@ -68,6 +69,8 @@ class MembershipController extends Controller
      */
     public function edit($id)
     {
+        checkpermission('memberships');
+
         $data = Membership::find($id);
         return view('admin.membership.edit',compact('data'));
     }

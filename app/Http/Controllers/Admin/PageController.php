@@ -16,6 +16,7 @@ class PageController extends Controller
      */
     public function index()
     {
+        checkpermission('privacy-policy');
         $data =Page::latest()->get();
         return view('admin.page.index',compact('data'));
     }
@@ -51,7 +52,7 @@ class PageController extends Controller
             'alert-type'=>'success'
              );
            return Redirect()->back()->with($notification);
-        
+
     }
 
     /**
@@ -102,7 +103,7 @@ class PageController extends Controller
              );
            return Redirect()->back()->with($notification);
 
-      
+
     }
 
     /**
@@ -113,6 +114,7 @@ class PageController extends Controller
      */
     public function destroy($id)
     {
+        checkpermission('privacy-policy');
         $data = Page::find($id)->delete();
         $notification=array(
             'messege'=>'Successfully Deleted !',
@@ -120,6 +122,6 @@ class PageController extends Controller
              );
            return Redirect()->back()->with($notification);
 
-       
+
     }
 }

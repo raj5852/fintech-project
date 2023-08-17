@@ -37,7 +37,8 @@ class Product extends Model
 
     protected $casts = [
         'commissions' => 'array',
-        'product_url' => 'array'
+        'product_url' => 'array',
+        'linkupdated_time'=>'array'
     ];
 
     /**

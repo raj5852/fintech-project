@@ -11,6 +11,7 @@ class OrderController extends Controller
 {
     public function ALlOrder()
     {
+        checkpermission('orders');
         $order_no = request('order_no');
 
         $orders = Order::when('order_no',function($query) use($order_no){
@@ -21,18 +22,24 @@ class OrderController extends Controller
 
     public function OrderView($id)
     {
+        checkpermission('orders');
+
         $order = Order::find($id);
         return view('admin.order.order_view', compact('order'));
     }
 
     public function orderEmail()
     {
+        checkpermission('orders');
+
         $OrderEmail = Order::where('email_colleted', 1)->latest()->get();
         return view('admin.order.order_email', compact('OrderEmail'));
     }
 
     function preorders()
     {
+        checkpermission('orders');
+
         $preOrders =  OrderDetails::withWhereHas('order', function ($query) {
             $query->where('is_preorder', 1)
                 ->select('id', 'email', 'payment_method','name','order_no');
@@ -42,6 +49,8 @@ class OrderController extends Controller
     }
 
     function orderdelete($id){
+        checkpermission('orders');
+
         $order = Order::find($id);
         $order->delete();
 

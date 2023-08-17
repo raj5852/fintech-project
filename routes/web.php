@@ -88,6 +88,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 Auth::routes();
 
@@ -213,6 +215,7 @@ Route::prefix('user')->middleware(['auth', 'user-access:user', 'verified'])->gro
     Route::delete('/delete/wishlist/{id}', [WishListController::class, 'destroy'])->name('delete.wishlist');
     Route::post('/delete/wish-item/{id}', [WishListController::class, 'deleteWishItem'])->name('delete.wish.Item');
     Route::get('view/wishlist', [WishListController::class, 'view']);
+    Route::get('/delete/wishlist/{id}', [WishListController::class, 'destroy'])->name('wishlist.delete');
 
     //----Apply coupon Route----//
     Route::post('apply/coupon', [CartController::class, 'applyCoupon'])->name('apply.coupon');
@@ -303,7 +306,7 @@ All Admin Routes List
 Route::get('admin/login', [LoginController::class, 'adminLogin'])->name('admin.login');
 
 
-Route::prefix('admin')->middleware(['auth', 'user-access:admin'])->group(function () {
+Route::prefix('admin')->middleware(['auth', 'is_admin'])->group(function () {
 
     Route::get('home', [HomeController::class, 'adminHome'])->name('admin.home');
 
@@ -353,7 +356,7 @@ Route::prefix('admin')->middleware(['auth', 'user-access:admin'])->group(functio
         Route::get('view/{id}', [OrderController::class, 'OrderView'])->name('view.view');
         Route::get('pre-orders', [OrderController::class, 'preorders'])->name('admin.preorders');
         Route::get('order-delete/{id}', [OrderController::class, 'orderdelete'])->name('admin.orderdelete');
-        Route::resource('addorder', AddOrderController::class)->only('create','store');
+        Route::resource('addorder', AddOrderController::class)->only('create', 'store');
     });
 
 
@@ -409,6 +412,7 @@ Route::prefix('admin')->middleware(['auth', 'user-access:admin'])->group(functio
         Route::get('image/delete/{image}', [ProductController::class, 'ImageDelete'])->name('delete.image');
         Route::get('status-change/{productId}/{statusId}', [ProductController::class, 'stausChange'])->name('product.status.change')->where(['productId' => '[0-9]+', 'statusId' => '[01]']);
 
+        Route::get('delete-url/{productid}/{indexnumber}',[ProductController::class,'deleteurl'])->name('product.url.delete');
         //---Json data----//
         Route::get('/get/subcategory/{cat_id}', [ProductController::class, 'getSubcategory']);
     });
@@ -500,6 +504,9 @@ Route::prefix('admin')->middleware(['auth', 'user-access:admin'])->group(functio
         Route::get('edit/{id}', [ProductRequestController::class, 'edit'])->name('edit.productrequest');
         Route::post('update/{id}', [ProductRequestController::class, 'update'])->name('update.productrequest');
         Route::get('delete/{id}', [ProductRequestController::class, 'destroy'])->name('delete.productrequest');
+        Route::get('add-request',[ProductRequestController::class,'addrequest'])->name('addrequest');
+        Route::post('request-store',[ProductRequestController::class,'requeststore'])->name('admin.requeststore');
+
     });
 
     Route::group(['prefix' => 'productrequesttwo'], function () {
@@ -605,7 +612,22 @@ Route::get('migrate', function () {
 
 Route::get('demo', function () {
 
-    // abort(1==1,403);
 
-    return auth()->user();
+
+
+    // $user = User::create([
+    //     'name' => 'robi',
+    //     'email' => 'robi@gmail.com',
+    //     'password' => bcrypt('password'),
+    //     'type'=>'worker'
+    // ]);
+
+    // $role = Role::create(['name' => 'admin']);
+
+    // $permissions = Permission::pluck('id','id')->all();
+
+    // $role->syncPermissions($permissions);
+
+    // $user->assignRole([$role->id]);
+
 });

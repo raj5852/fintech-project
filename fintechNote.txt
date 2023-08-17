@@ -1,5 +1,22 @@
 1. Need to change float(12,2) in users table balance column
 
 
-.profile
-.order
+2.    .profile
+    .order
+
+
+3.    $products = Product::all();
+        $time = now();
+
+        foreach ($products as $product) {
+            $productUrlData = $product->product_url;
+
+            $updatedTimeData = [];
+            foreach ($productUrlData as $url => $version) {
+                $updatedTimeData[$version] = $time;
+            }
+
+            $product->linkupdated_time =  $updatedTimeData;
+            $product->save();
+
+        }

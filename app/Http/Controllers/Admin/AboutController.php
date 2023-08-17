@@ -12,6 +12,7 @@ class AboutController extends Controller
 {
     public function AboutUs()
     {
+        checkpermission('about-page');
         $about=DB::table('abouts')->first();
         return view('admin.website.about',compact('about'));
     }
@@ -41,5 +42,5 @@ class AboutController extends Controller
 
     }
 
-    
+
 }

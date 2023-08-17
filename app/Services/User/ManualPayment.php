@@ -21,7 +21,7 @@ class ManualPayment
         $coupon = session()->has('coupon') ? session()->get('coupon')['code'] : "";
 
         $allproductsids =   Cart::content()->pluck('id');
-        $products = Product::query()->whereIn('id', $allproductsids)->select('id', 'product_price', 'product_name', 'product_url')->get();
+        $products = Product::query()->whereIn('id', $allproductsids)->select('id', 'product_price', 'product_name', 'product_url','total_cashback')->get();
 
         $producturls = $products->pluck('product_url');
         $urls = collect($producturls)
@@ -36,6 +36,11 @@ class ManualPayment
         $user = auth()->user();
 
         CheckoutService::payment($user, $products, $carCount, $totalPrice, $coupon_amount, $wallet, $coupon, $urls);
+
+
+        $totalCashback = $products->where('total_cashback','!=',null)->sum('total_cashback');
+
+        $user->increment('balance',$totalCashback);
 
         User::where('id', $user->id)->decrement('balance', $totalPrice);
 

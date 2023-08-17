@@ -53,7 +53,7 @@ class CouponController extends Controller
             'alert-type'=>'success'
              );
            return Redirect()->back()->with($notification);
-       
+
     }
 
     /**
@@ -102,7 +102,7 @@ class CouponController extends Controller
             'alert-type'=>'success'
              );
            return Redirect()->back()->with($notification);
-        
+
     }
 
     /**
@@ -113,12 +113,14 @@ class CouponController extends Controller
      */
     public function destroy($id)
     {
+        checkpermission('coupon');
+
         $data = Coupon::find($id)->delete();
         $notification=array(
             'messege'=>'Successfully Deleted !',
             'alert-type'=>'success'
              );
            return Redirect()->back()->with($notification);
-   
+
     }
 }

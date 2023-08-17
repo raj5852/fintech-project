@@ -159,7 +159,7 @@ class CartController extends Controller
      */
     public function applyCoupon(CouponRequest $request)
     {
-
+        checkpermission('coupon');
         $validatedData = $request->validated();
 
 

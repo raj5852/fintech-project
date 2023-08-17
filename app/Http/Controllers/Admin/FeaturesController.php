@@ -16,6 +16,7 @@ class FeaturesController extends Controller
      */
     public function index()
     {
+        checkpermission('privacy-policy');
         $datas = Features::latest()->get();
         return view('admin.features.index', compact('datas'));
     }
@@ -54,7 +55,7 @@ class FeaturesController extends Controller
             'alert-type'=>'success'
              );
            return Redirect()->back()->with($notification);
-     
+
     }
 
     /**
@@ -93,7 +94,7 @@ class FeaturesController extends Controller
         $validated = $request->validate([
             'heading' => 'required|unique:features,heading,'.$id,
             'description' => 'required',
-    
+
             ]);
         $old_image = Features::find($id);
         $data = $request->except('_token');
@@ -109,7 +110,7 @@ class FeaturesController extends Controller
             'alert-type'=>'success'
              );
            return Redirect()->back()->with($notification);
-       
+
     }
 
     /**
@@ -120,6 +121,7 @@ class FeaturesController extends Controller
      */
     public function destroy($id)
     {
+        checkpermission('privacy-policy');
         $data = Features::find($id);
         if(file_exists($data->photo)){
             unlink($data->photo);

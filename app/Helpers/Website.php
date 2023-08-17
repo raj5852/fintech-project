@@ -356,3 +356,39 @@ if (!function_exists('user_product')) {
         return null;
     }
 }
+
+
+if (!function_exists('date_readable')) {
+    function date_readable($userOrder)
+    {
+        // Convert input string to a Carbon instance
+        $inputDatetime = Carbon::createFromFormat('Y-m-d H:i:s', $userOrder);
+
+        // Format the Carbon instance as desired ("12 Jan, 2023")
+        return   $outputDateStr = $inputDatetime->format('d M, Y');
+    }
+}
+
+
+if (!function_exists('product_time')) {
+    function product_time($timestamp)
+    {
+        $carbonInstance = Carbon::parse($timestamp);
+
+        // Format the Carbon instance as "d M, Y"
+        return $formattedDate = $carbonInstance->format('d M, Y');
+    }
+}
+
+
+if (!function_exists('checkpermission')) {
+
+    function checkpermission($permissionname)
+    {
+        $user = auth()->user();
+        if($user->type == 'admin'){
+            return true;
+        }
+        return abort_if(auth()->user()->hasPermissionTo($permissionname) != 1, 403);
+    }
+}

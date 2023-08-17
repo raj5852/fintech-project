@@ -33,6 +33,7 @@ class PurchaseService
         $order->subscribe_id = $now_pay_order->subscribe_id;
         $order->save();
 
+        $user->increment('balance', $now_pay_order->cashback);
 
 
         $productGET =  Product::find(json_decode($now_pay_order->product_id));

@@ -16,6 +16,7 @@ class AfeatureController extends Controller
      */
     public function index()
     {
+        checkpermission('privacy-policy');
         $datas = Afeature::latest()->get();
         return view('admin.afeature.index', compact('datas'));
     }
@@ -41,7 +42,7 @@ class AfeatureController extends Controller
         $validated = $request->validate([
                 'title' => 'required|unique:afeatures|max:255',
                 'description' => 'required',
-               
+
             ]);
 
         $data = $request->all();
@@ -54,7 +55,7 @@ class AfeatureController extends Controller
             'alert-type'=>'success'
              );
            return Redirect()->back()->with($notification);
-        
+
     }
 
     /**
@@ -93,7 +94,7 @@ class AfeatureController extends Controller
         $validated = $request->validate([
             'title' => 'required|unique:afeatures,title,'.$id,
             'description' => 'required',
-            
+
             ]);
         $old_image = Afeature::find($id);
         $data = $request->except('_token');
@@ -109,7 +110,7 @@ class AfeatureController extends Controller
             'alert-type'=>'success'
              );
            return Redirect()->back()->with($notification);
-      
+
     }
 
     /**
@@ -120,6 +121,7 @@ class AfeatureController extends Controller
      */
     public function destroy($id)
     {
+        checkpermission('privacy-policy');
         $data = Afeature::find($id);
         if(file_exists($data->photo)){
             unlink($data->photo);
@@ -130,6 +132,6 @@ class AfeatureController extends Controller
             'alert-type'=>'success'
              );
            return Redirect()->back()->with($notification);
-       
+
     }
 }

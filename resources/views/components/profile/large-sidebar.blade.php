@@ -8,7 +8,7 @@
 
 
         <a href="{{ route('user.my-orders') }}"
-            class="nav-link justify-content-between  {{ request()->is('user/my-orders') ? 'active' : '' }} "><span><span
+            class="nav-link justify-content-between  {{ request()->is('user/my-orders') || request()->is('user/my-order/*')  ? 'active' : '' }} "><span><span
                     class="side-i-style-oxiz"><i class="fa-solid fa-wallet"></i></span> <span
                     class="side-text-style-oxiz">my Orders</span></span> <span
                 class="dashboard__main-count">{{ $userDetails->order_details_count }}</span></a>

@@ -17,6 +17,7 @@ class SubCategoryController extends Controller
      */
     public function index()
     {
+        checkpermission('category');
         $data = SubCategory::latest()->get();
         $category = Category::get();
         return view('admin.sub_category.index',compact('data','category'));
@@ -116,6 +117,7 @@ class SubCategoryController extends Controller
      */
     public function destroy($id)
     {
+        checkpermission('category');
         SubCategory::find($id)->delete();
 
         $notification=array(

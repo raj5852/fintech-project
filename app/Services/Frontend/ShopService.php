@@ -24,7 +24,7 @@ class ShopService
         $all_category = $category->sum('product_count');
 
         $products = Product::where(['status'=> 1,'pre_order_status'=>0])
-            ->select('id','category_id','subcategory_id','product_name','product_slug','product_price','discount_price','thumbnail','product_url')
+            ->select('id','category_id','subcategory_id','product_name','product_slug','product_price','discount_price','thumbnail','product_url','is_link_updated')
             ->when(request('sort') == 'product_popular', function ($q) {
                 return $q->withCount('orderItems')->orderBy('order_items_count', 'desc');
             })

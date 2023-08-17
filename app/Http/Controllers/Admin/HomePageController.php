@@ -9,13 +9,13 @@ class HomePageController extends Controller
 {
     public function index()
     {
-
+        checkpermission('home-page-setting');
 
         $homepages=HomePage::all();
         return view('admin.website.homepage.index',compact('homepages'));
-        
+
     }
-    
+
     public function add()
     {
         return view('admin.website.homepage.add');
@@ -26,8 +26,8 @@ class HomePageController extends Controller
         $homepage =new HomePage;
         $homepage->title=$request->title;
         $homepage->details =$request->details;
-    
-    
+
+
 
         $homepage->save();
          $notification=array(
@@ -40,18 +40,20 @@ class HomePageController extends Controller
 
     public function edit($id)
     {
+        checkpermission('home-page-setting');
         $homepage =HomePage::find($id);
         return view('admin.website.homepage.edit',compact('homepage'));
     }
 
     public function update(Request $request,$id)
     {
+        checkpermission('home-page-setting');
         $homepage =HomePage::find($id);
         $homepage->title=$request->title;
         $homepage->details =$request->details;
 
 
-      
+
         $homepage->save();
         $notification=array(
             'messege'=>'HomePage Updated Successfully',
@@ -63,6 +65,7 @@ class HomePageController extends Controller
 
     public function delete($id)
     {
+        checkpermission('home-page-setting');
         HomePage::find($id)->delete();
         $notification=array(
             'messege'=>'HomePage Successfully Deleted !',

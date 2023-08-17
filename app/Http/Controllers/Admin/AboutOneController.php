@@ -12,7 +12,7 @@ class AboutOneController extends Controller
     public function index()
     {
 
-
+        checkpermission('about-page');
         $aboutone = AboutOne::all();
         return view('admin.website.aboutone.index', compact('aboutone'));
     }
@@ -57,6 +57,7 @@ class AboutOneController extends Controller
 
     public function edit($id)
     {
+        checkpermission('about-page');
         $aboutone = AboutOne::find($id);
         return view('admin.website.aboutone.edit', compact('aboutone'));
     }
@@ -88,6 +89,7 @@ class AboutOneController extends Controller
 
     public function delete($id)
     {
+        checkpermission('about-page');
         AboutOne::find($id)->delete();
         $notification = array(
             'messege' => 'AboutOne Successfully Deleted !',

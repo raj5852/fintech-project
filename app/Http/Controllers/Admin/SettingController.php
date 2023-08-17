@@ -12,6 +12,7 @@ class SettingController extends Controller
 {
     public function WebSite()
     {
+        checkpermission('home-page-setting');
         $setting=DB::table('web_sites')->first();
         return view('admin.website.setting',compact('setting'));
     }

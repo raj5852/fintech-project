@@ -18,7 +18,7 @@
 
             <div class="mobile-show-content">
                 <!-- new table start  -->
-                <x-profile.wishlist-content />
+                <x-profile.wishlist-content :wishlists="$wishlists" />
                 <!-- new table end  -->
             </div>
             <!-- end mobile version 992px -->
@@ -43,7 +43,7 @@
 
 
                                     <!-- new table start  -->
-                                    <x-profile.wishlist-content />
+                                    <x-profile.wishlist-content :wishlists="$wishlists"/>
 
                                     <!-- new table end  -->
                                 </div>

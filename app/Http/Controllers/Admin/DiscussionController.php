@@ -21,6 +21,7 @@ class DiscussionController extends Controller
      */
     public function index()
     {
+        checkpermission('discussion');
         $discussions = Discussion::withCount('discussionUsers')->latest()->paginate(10);
         return view('admin.discussion.index', compact('discussions'));
     }
@@ -32,6 +33,7 @@ class DiscussionController extends Controller
      */
     public function create()
     {
+        checkpermission('discussion');
         $users = DB::table('users')->where('type', '!=', 'admin')->select('id', 'email')->get();
         return view('admin.discussion.create', compact('users'));
     }
@@ -44,6 +46,8 @@ class DiscussionController extends Controller
      */
     public function store(DiscussionCreate $request)
     {
+        checkpermission('discussion');
+
         $validateData =  $request->validated();
 
         $discussion =  Discussion::create([
@@ -79,6 +83,8 @@ class DiscussionController extends Controller
      */
     public function edit(Discussion $discussion)
     {
+        checkpermission('discussion');
+
         $data  = $discussion->load('discussionUsers');
 
         $users = DB::table('users')->where('type', '!=', 'admin')->select('id', 'email')->get();
@@ -95,6 +101,8 @@ class DiscussionController extends Controller
      */
     public function update(DiscussionUpdate $request, $id)
     {
+        checkpermission('discussion');
+
         DB::table('discussion_users')->where('discussion_id', $id)->delete();
 
         foreach ($request->user_id as  $userid) {
@@ -114,6 +122,7 @@ class DiscussionController extends Controller
      */
     public function destroy($id)
     {
+        checkpermission('discussion');
         DB::table('discussions')->where('id',$id)->delete();
         DB::table('discussion_users')->where('discussion_id',$id)->delete();
 

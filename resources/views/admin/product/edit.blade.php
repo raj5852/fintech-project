@@ -180,7 +180,7 @@
 
 
                             <div class="col-md-4">
-                                <label for="inputCity" class="form-label">Commission type</label>
+                                <label for="inputCity" class="form-label">Cashback type</label>
                                 <select class="form-control" name="commission_type[]" id="inputFirstName">
                                     <option value="" selected>---Select--</option>
 
@@ -220,6 +220,13 @@
                                         name="is_free" type="checkbox" id="flexSwitchCheckChecked" value="1">
                                     <label class="form-check-label" for="flexSwitchCheckChecked">Free Product</label>
                                 </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-4 mt-4" id="is_new_user">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" {{ $data->is_new_user == 1? 'checked':'' }} name="is_new_user" type="checkbox" id="new_user" value="1">
+                                <label class="form-check-label" for="is_new_user">Click disable product links for new user</label>
                             </div>
                         </div>
                         <div class="row mt-3">
@@ -303,6 +310,7 @@
                                         <tr>
                                             <td><input type="text" name="product_url[]" placeholder="Product URL"
                                                     class="form-control name_list" value="{{ $link }}" /></td>
+
                                             <td><input type="text" name="product_version[]"
                                                     placeholder="Product Version" value="{{ $version }}"
                                                     class="form-control name_list" /></td>
@@ -312,9 +320,9 @@
                                                     <button type="button" name="add" id="addurl"
                                                         class="btn btn-sm btn-success">Add</button>
                                                 @else
-                                                    <button type="button" name="remove" id="{{ $loop->first }}"
+                                                    <a href="{{ route('product.url.delete', ['productid' => $data->id, 'indexnumber' => $loop->index]) }}" name="remove" id="{{ $loop->first }}"
                                                         class="btn btn-sm btn-danger remove-btn"><i
-                                                            class="bx bx-trash"></i></button>
+                                                            class="bx bx-trash"></i></a>
                                                 @endif
 
 
@@ -339,7 +347,20 @@
                             <textarea class="form-control" id="summernote2" name="description" placeholder="Address 2..." rows="3">{{ $data->description }}</textarea>
                         </div>
                         <br>
+                        <div class="col-12 mt-3">
+                            <div class="mb-3">
+                                <label class="form-label">Meta keyword <small class="text-danger"></small></label>
+                                <input type="text" class="form-control" placeholder="Enter tags" name="meta_keyword"
+                                    data-role="tagsinput" value="{{ $data->meta_keyword }}">
+                            </div>
+                        </div>
 
+                        <div class="col-12">
+                            <label for="inputAddress2" class="form-label">Meta description <sup
+                                    class="text-danger">*</sup></label>
+                            <textarea class="form-control"  name="meta_description" placeholder="Address 2..." rows="3"
+                                value="{{ old('meta_description') }}">{{ $data->meta_description }}</textarea>
+                        </div>
                         <div class="col-md-6" id="minimum_orders">
                             <label for="minimum_orders" class="form-label">Minimum orders <sup
                                     class="text-danger">*</sup></label>
@@ -459,8 +480,12 @@
                 // Initial state
                 @if ($data->pre_order_status == 1)
                     $("#minimum_orders").show();
+                $("#is_new_user").hide();
+
                 @else
                     $("#minimum_orders").hide();
+                $("#is_new_user").show();
+
                 @endif
 
 
@@ -470,10 +495,10 @@
                     if ($(this).is(":checked")) {
 
                         $("#minimum_orders").show();
-
-
+                        $("#is_new_user").hide();
                     } else {
 
+                        $("#is_new_user").show();
 
                         $("#minimum_orders").hide();
 

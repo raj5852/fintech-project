@@ -9,6 +9,7 @@ class MedicineController extends Controller
 {
     public function index()
     {
+        checkpermission('request-product');
 
         $requesstproducts=Medicine::all();
         return view('admin.productrequesttwo.index',compact('requesstproducts'));

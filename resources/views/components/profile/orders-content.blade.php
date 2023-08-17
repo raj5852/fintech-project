@@ -8,69 +8,25 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>
-                    <div class="product-rp">
-                        <div class="img">
-                            <img src="{{ asset('frontend/') }}/img/items-img-1.png" alt="">
+            @foreach ($orders as $order)
+                <tr>
+                    <td>
+                        <div class="product-rp">
+                            <div class="img">
+                                <img src="{{ asset($order->thumbnail) }}" alt="">
+                            </div>
+                            <h1 class="__name"> {{ $order->product_name }} </h1>
                         </div>
-                        <h1 class="__name">Microsoft Office</h1>
-                    </div>
-                </td>
-                <td><span class="__pp">$45.00</span></td>
-                <td><a class="common-btn" href="#">Details</a></td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="product-rp">
-                        <div class="img">
-                            <img src="{{ asset('frontend/') }}/img/items-img-1.png" alt="">
-                        </div>
-                        <h1 class="__name">Microsoft Office</h1>
-                    </div>
-                </td>
-                <td><span class="__pp">$45.00</span></td>
-                <td><a class="common-btn" href="#">Details</a></td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="product-rp">
-                        <div class="img">
-                            <img src="{{ asset('frontend/') }}/img/items-img-1.png" alt="">
-                        </div>
-                        <h1 class="__name">Microsoft Office</h1>
-                    </div>
-                </td>
-                <td><span class="__pp">$45.00</span></td>
-                <td><a class="common-btn" href="#">Details</a></td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="product-rp">
-                        <div class="img">
-                            <img src="{{ asset('frontend/') }}/img/items-img-1.png" alt="">
-                        </div>
-                        <h1 class="__name">Microsoft Office</h1>
-                    </div>
-                </td>
-                <td><span class="__pp">$45.00</span></td>
-                <td><a class="common-btn" href="#">Details</a></td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="product-rp">
-                        <div class="img">
-                            <img src="{{ asset('frontend/') }}/img/items-img-1.png" alt="">
-                        </div>
-                        <h1 class="__name">Microsoft Office</h1>
-                    </div>
-                </td>
-                <td><span class="__pp">$45.00</span></td>
-                <td><a class="common-btn" href="#">Details</a></td>
-            </tr>
+                    </td>
+                    <td><span class="__pp"> {{ $order->discount_price }} </span></td>
+                    <td><a class="common-btn" href="{{ route('user.my-order.details',$order->id) }}">Details</a></td>
+                </tr>
+            @endforeach
+
 
 
 
         </tbody>
     </table>
+    {{ $orders->links('vendor.pagination.default') }}
 </div>
