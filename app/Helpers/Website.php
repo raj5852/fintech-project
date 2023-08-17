@@ -392,3 +392,19 @@ if (!function_exists('checkpermission')) {
         return abort_if(auth()->user()->hasPermissionTo($permissionname) != 1, 403);
     }
 }
+
+if (!function_exists('is_access')) {
+
+    function is_access($permissionname)
+    {
+        $user = auth()->user();
+
+        if($user->type == 'admin' ){
+            return true;
+        }elseif(auth()->user()->hasPermissionTo($permissionname) == true){
+            return true;
+        }
+
+        // return false;
+    }
+}

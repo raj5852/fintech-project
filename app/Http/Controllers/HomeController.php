@@ -130,6 +130,10 @@ class HomeController extends Controller
         return view('admin.adminHome', compact('totalMemberShip'));
     }
 
+    function dashboard(){
+        return view('admin.dashboard');
+    }
+
     function allusers(Request $request)
     {
         checkpermission('memberships');

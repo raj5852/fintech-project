@@ -30,6 +30,7 @@ use App\Http\Controllers\Admin\AboutOneController;
 use App\Http\Controllers\Admin\AboutTwoController;
 use App\Http\Controllers\Admin\BackupControler;
 use App\Http\Controllers\Admin\BalanceController;
+use App\Http\Controllers\Admin\CreateWorker;
 use App\Http\Controllers\Admin\DiscussionController;
 use App\Http\Controllers\Admin\FixedSpecificationController;
 use App\Http\Controllers\Admin\ManageApiController;
@@ -38,6 +39,7 @@ use App\Http\Controllers\Admin\MembershipController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\OfferController;
 use App\Http\Controllers\Admin\RequestProductController as ReqProductController;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\AdminAndUser\CommentController as AdminAndUserCommentController;
 use App\Http\Controllers\Api\BinanceController;
 //----Front-----
@@ -309,7 +311,7 @@ Route::get('admin/login', [LoginController::class, 'adminLogin'])->name('admin.l
 Route::prefix('admin')->middleware(['auth', 'is_admin'])->group(function () {
 
     Route::get('home', [HomeController::class, 'adminHome'])->name('admin.home');
-
+    Route::get('dashboard',[HomeController::class,'dashboard'])->name('worker.dashboard');
     //show all users
     Route::get('all-user', [HomeController::class, 'allusers'])->name('admin.all-user');
     Route::get('genarel-members', [HomeController::class, 'genarelMembers'])->name('admin.genarel-members');
@@ -598,6 +600,9 @@ Route::prefix('admin')->middleware(['auth', 'is_admin'])->group(function () {
 
     //discussion
     Route::resource('discussion', DiscussionController::class);
+    //role
+    Route::resource('role',RoleController::class);
+    Route::resource('create-user',CreateWorker::class);
 });
 Route::post('custom-reset-password', [ResetController::class, 'index'])->name('custom.password.reset');
 
@@ -611,9 +616,6 @@ Route::get('migrate', function () {
 });
 
 Route::get('demo', function () {
-
-
-
 
     // $user = User::create([
     //     'name' => 'robi',
@@ -629,5 +631,9 @@ Route::get('demo', function () {
     // $role->syncPermissions($permissions);
 
     // $user->assignRole([$role->id]);
+
+    // return         $permissions = Permission::where('id','!=',5)->pluck('id', 'id')->all();
+
+    return auth()->user()->hasPermissionTo('dashboard');
 
 });

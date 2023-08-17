@@ -40,29 +40,29 @@ class LoginController extends Controller
     }
 
     public function login(Request $request)
-        {
-            $input = $request->all();
+    {
+        $input = $request->all();
 
-            $this->validate($request, [
-                'email' => 'required|email',
-                'password' => 'required',
-            ], [
-                'email.required' => 'The email field is required.',
-                'email.email' => 'Please enter a valid email address.',
-                'password.required' => 'The password field is required.',
-            ]);
+        $this->validate($request, [
+            'email' => 'required|email',
+            'password' => 'required',
+        ], [
+            'email.required' => 'The email field is required.',
+            'email.email' => 'Please enter a valid email address.',
+            'password.required' => 'The password field is required.',
+        ]);
 
-            if(auth()->attempt(array('email' => $input['email'], 'password' => $input['password'])))
-            {
-                if (auth()->user()->type == 'admin') {
-                    return redirect()->route('admin.home');
-                }else{
-                    return redirect()->route('user.home');
-                }
-            }else{
-                return redirect('/')
-                    ->with('error','Email Or Password Are Wrong !');
+        if (auth()->attempt(array('email' => $input['email'], 'password' => $input['password']))) {
+            if (auth()->user()->type == 'admin' || auth()->user()->hasPermissionTo('dashboard')) {
+                return redirect()->route('admin.home');
+            } elseif (auth()->user()->type == 'worker') {
+                return redirect()->route('worker.dashboard');
+            } else {
+                return redirect()->route('user.home');
             }
-
+        } else {
+            return redirect('/')
+                ->with('error', 'Email Or Password Are Wrong !');
         }
+    }
 }
