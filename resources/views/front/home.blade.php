@@ -30,9 +30,9 @@
                             @endif
 
                         </center>
-                        <h1 class="heading mb-3">{{ $setting->title }}</h1>
+                        <h1 class="heading mb-3">{{ $setting?->title }}</h1>
                         <p class="text">
-                            {{ $setting->details }}
+                            {{ $setting?->details }}
                         </p>
 
                         <!-- old style search form  -->
@@ -117,8 +117,8 @@
         <div class="container">
             <h2 class="heading mb-5 text-center d-none d-lg-block">
 
-                {{ $setting->market_title }} <br />
-                {{ $setting->market_details }}
+                {{ $setting?->market_title }} <br />
+                {{ $setting?->market_details }}
 
             </h2>
 
@@ -149,8 +149,8 @@
     <section class="section items-section">
         <div class="container">
 
-            <h2 class="heading text-center">{{ $setting->latest_product_title }} </h2>
-            <p class="text mb-4 text-center">{{ $setting->latest_product_des }} </p>
+            <h2 class="heading text-center">{{ $setting?->latest_product_title }} </h2>
+            <p class="text mb-4 text-center">{{ $setting?->latest_product_des }} </p>
 
             <div class="items row g-4 mb-4">
                 <div class="cards-wrap-ab">
@@ -236,9 +236,9 @@
     <section class="section items-section free-items">
         <div class="container">
 
-            <h2 class="heading text-center">{{ $setting->free_product_title }} </h2>
+            <h2 class="heading text-center">{{ $setting?->free_product_title }} </h2>
             <h3 class="heading mb-4 text-center">
-                {{ $setting->free_product_des }}
+                {{ $setting?->free_product_des }}
             </h3>
             <div class="items row g-4 mb-4">
                 <div class="cards-wrap-ab">
@@ -532,10 +532,10 @@
     <section class="section request-sction">
         <div class="container">
 
-            <h2 class="heading mb-2 text-center">{{ $setting->software_title }}</h2>
+            <h2 class="heading mb-2 text-center">{{ $setting?->software_title }}</h2>
             <div class='d-flex justify-content-center '>
 
-                {{ $setting->software_des }}
+                {{ $setting?->software_des }}
 
             </div>
 
@@ -870,8 +870,8 @@
             <div class="wrap">
                 <img src="{{ asset('frontend/img/email-sub.svg') }}" alt="sadsd">
 
-                <h1>{{ $setting->test_title }}</h1>
-                <p>{{ $setting->test_desc }}</p>
+                <h1>{{ $setting?->test_title }}</h1>
+                <p>{{ $setting?->test_desc }}</p>
                 <form action="{{ url('subscriber/store') }}" method="post" class="w-100">
                     @csrf
                     <div class="sub">
@@ -927,7 +927,7 @@
     <section class="section client-section">
         <div class="container">
             <h2 class="heading text-center">
-                {{ $setting->tesmonial }}
+                {{ $setting?->tesmonial }}
 
             </h2>
 
@@ -975,8 +975,8 @@
     <div class="about__newsletter">
         <div class="about__newsletter-wrapper">
 
-            <span class="about__newsletter-title">{{ $setting->test_title }}</span>
-            <p class="about__newsletter-dis">{{ $setting->test_desc }}</p>
+            <span class="about__newsletter-title">{{ $setting?->test_title }}</span>
+            <p class="about__newsletter-dis">{{ $setting?->test_desc }}</p>
 
             <br>
             <form action="{{ url('subscriber/store') }}" method="post">

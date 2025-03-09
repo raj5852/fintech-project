@@ -158,7 +158,7 @@ if (!function_exists('nowpayment_callback_url')) {
 if (!function_exists('tawkFnction')) {
     function tawkFnction()
     {
-        $data =  ManageAPI::query()->where('name', 'tawk')->first()->details;
+        $data =  ManageAPI::query()->where('name', 'tawk')->first()?->details;
         return json_decode($data);
     }
 }
@@ -166,14 +166,14 @@ if (!function_exists('tawkFnction')) {
 if (!function_exists('widget_id')) {
     function widget_id()
     {
-        return tawkFnction()->WIDGET_ID;
+        return tawkFnction()?->WIDGET_ID;
     }
 }
 
 if (!function_exists('property_id')) {
     function property_id()
     {
-        return tawkFnction()->PROPERTY_ID;
+        return tawkFnction()?->PROPERTY_ID;
     }
 }
 

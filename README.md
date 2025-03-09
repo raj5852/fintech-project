@@ -1,41 +1,48 @@
-assets=> public/frontend/
-resources/view/front
+# E-commerce Platform for Digital Products
 
-today work 15-7-23
-front.blade.php
+An advanced Laravel-based platform for selling digital products with modern features such as membership systems, wallet recharge, multiple payment gateways, custom product requests, and more.
 
-  <!-- add search button  -->
-  <!-- add preorder  -->
-  <!-- search-wrap  -->
-  <!-- offer-notify -->
+## Features
 
-home.blade.php
+1. **Membership Systems**  
+   - Create and manage membership plans.
+   - Membership order and renewal.
+   - Expiration notifications for memberships.
 
-   <!-- create new search form  -->
-   <!-- new telegram section  -->
-  <!-- latest-terminal-update -->
+2. **Wallet Recharge**  
+   - Allow users to recharge wallets.
+   - Integrated transaction history for transparency.
 
-## Common UI Component
+3. **Payment Gateway Integration**  
+   - Supports PayPal, NowPayments, Stripe, and Binance.
 
-Button Outline
+4. **Custom Product Request**  
+   - Users can request custom products tailored to their needs.
 
-```
-btn__outline-ab
-common-button-full-rounded
+5. **Latest Product Links**  
+   - Automatically send the latest product links to ordered users.
 
-```
+6. **Product Ordering System**  
+   - Seamless ordering and tracking of products.
 
-create page
+7. **Promotional Emails**  
+   - Send promotional emails to users for new products and offers.
 
-```
-Front controller
-web.php
-```
+8. **Transaction History**  
+   - Detailed history of all user transactions.
 
-##pages
+9. **Notifications**  
+   - Notify users about membership expirations and order updates.
 
-- http://127.0.0.1:8000/user/recharge
-  http://127.0.0.1:8000/user/my-order/1
-  http://127.0.0.1:8000/renew-membership
-  http://127.0.0.1:8000/preorder-view
-  http://127.0.0.1:8000/preorder-details
+10. **Discussion Channel**  
+    - Enable users to discuss and share feedback.
+
+11. **Admin Analytics Dashboard**  
+    - Advanced dashboard with metrics and analytics for admin use.
+
+12. **Role-Based Permissions**  
+    - Fine-grained control over user roles and permissions.
+
+## Live Link
+
+URL: https://fintechea.com/

@@ -14,8 +14,15 @@ return new class extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->float('balance',8,2)->change();
-            $table->integer('subscribe_id')->change();
+            if (Schema::hasColumn('users', 'balance')) {
+                $table->float('balance', 8, 2)->change();
+            } else {
+                $table->float('balance', 8, 2)->nullable();
+            }
+
+            if (Schema::hasColumn('users', 'subscribe_id')) {
+                $table->integer('subscribe_id')->change();
+            }
         });
     }
 

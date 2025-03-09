@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::table('products', function (Blueprint $table) {
             $table->integer('pre_order_status')->nullable()->default(0);
-            $table->text('product_url')->nullable()->change();
+            $table->text('product_url')->nullable();
             // $table->integer('category_id')->nullable()->change();
 
         });
@@ -30,7 +30,7 @@ return new class extends Migration
     {
         Schema::table('products', function (Blueprint $table) {
             $table->integer('pre_order_status')->nullable()->default(0);
-            $table->integer('product_url')->nullable()->change();
+            $table->integer('product_url')->nullable();
             // $table->integer('category_id')->nullable()->change();
         });
     }

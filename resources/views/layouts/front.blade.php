@@ -75,7 +75,7 @@
                     <div class="nav__wrapper d-flex justify-content-between align-items-center gap-4">
                         <div class="nav__logo d-flex align-items-center gap-3">
                             <a href="{{ url('/') }}">
-                                <img src="{{ asset('backend/setting/' . $setting->image) }}" alt="logo" /></a>
+                                <img src="{{ asset('backend/setting/' . $setting?->image) }}" alt="logo" /></a>
                         </div>
                         <div class="nav__right d-flex align-items-center">
                             <div class="top-nav-bar-all-elements-wrap">
@@ -394,7 +394,7 @@
                         <li>
                             <a class="item" href="#">
                                 <div>
-                                    <img src="{{ asset('backend/setting/' . $setting->image) }}" alt="logo" />
+                                    <img src="{{ asset('backend/setting/' . $setting?->image) }}" alt="logo" />
                                 </div>
                                 <p class="res-text">Adobe Draw Down</p>
                             </a>
@@ -402,7 +402,7 @@
                         <li>
                             <a class="item" href="#">
                                 <div>
-                                    <img src="{{ asset('backend/setting/' . $setting->image) }}" alt="logo" />
+                                    <img src="{{ asset('backend/setting/' . $setting?->image) }}" alt="logo" />
                                 </div>
                                 <p class="res-text">Adobe Draw Down</p>
                             </a>
@@ -410,7 +410,7 @@
                         <li>
                             <a class="item" href="#">
                                 <div>
-                                    <img src="{{ asset('backend/setting/' . $setting->image) }}" alt="logo" />
+                                    <img src="{{ asset('backend/setting/' . $setting?->image) }}" alt="logo" />
                                 </div>
                                 <p class="res-text">Adobe Draw Down</p>
                             </a>
@@ -419,7 +419,7 @@
                         <li>
                             <a class="item" href="#">
                                 <div>
-                                    <img src="{{ asset('backend/setting/' . $setting->image) }}" alt="logo" />
+                                    <img src="{{ asset('backend/setting/' . $setting?->image) }}" alt="logo" />
                                 </div>
                                 <p class="res-text">Adobe Draw Down</p>
                             </a>
@@ -507,7 +507,7 @@
                     <div class="mobile_left">
                         <div class="logo">
                             <a href="{{ url('/') }}"><img
-                                    src="{{ asset('backend/setting/' . $setting->image) }}" alt="logo"></a>
+                                    src="{{ asset('backend/setting/' . $setting?->image) }}" alt="logo"></a>
                         </div>
                     </div>
                     <div class="mobile_right">
@@ -522,7 +522,7 @@
             <div class="container">
                 <div class="mobile_header">
                     <div class="mobile-logo">
-                        <img src="{{ asset('backend/setting/' . $setting->image) }}" alt="">
+                        <img src="{{ asset('backend/setting/' . $setting?->image) }}" alt="">
                     </div>
                     <div class="icon">
                         <i class="bi bi-x close_info"></i>
@@ -615,12 +615,12 @@
                 <div class="footer row g-5">
                     <div class="col-12 col-sm-6 col-lg-4">
                         <div class="footer__item logo-area">
-                            <img src="{{ asset('backend/setting/' . $setting->image) }}" alt=""
+                            <img src="{{ asset('backend/setting/' . $setting?->image) }}" alt=""
                                 class="logo logo-black mb-3" />
-                            <img src="{{ asset('backend/setting/' . $setting->image) }}" alt=""
+                            <img src="{{ asset('backend/setting/' . $setting?->image) }}" alt=""
                                 class="logo logo-white mb-3" />
                             <p class="text text-white mb-3">
-                                {{-- {{$setting->about}} --}}
+                                {{-- {{$setting?->about}} --}}
                             </p>
                             <ul class="social d-flex align-items-center gap-2">
                                 @foreach (socials() as $social)
